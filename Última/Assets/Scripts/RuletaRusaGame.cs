@@ -13,6 +13,16 @@ public class RuletaRusa : MonoBehaviour
     public Button dispararDealerButton; // Botón para disparar al dealer
     public Button dispararseButton;     // Botón para dispararse a sí mismo
     public Button girarBarrilButton;    // Botón para girar el barril
+    public Image backgroundImage; // Imagen de fondo
+
+    public Sprite imgInicial;         // Imagen del arma en la mesa
+    public Sprite imgDealerGira;      // Imagen del dealer girando la recámara
+    public Sprite imgDealerDispara;   // Imagen del dealer disparándome
+    public Sprite imgDealerSuicida;   // Imagen del dealer disparándose
+    public Sprite imgJugadorDispara;  // Imagen del jugador disparándole al dealer
+    public Sprite imgJugadorSuicida;  // Imagen del jugador disparándose
+    public Sprite imgJugadorGira;     // Imagen del jugador girando la recámara
+    public Sprite imgDealerMuerto;    // Imagen del dealer muerto
 
     private int[] barril = { 1, 2, 3, 4, 5, 6 }; // Posiciones del barril
     private int posicionActual;  // Posición actual del barril
@@ -26,6 +36,7 @@ public class RuletaRusa : MonoBehaviour
         rulesPanel.SetActive(true);
         dealerText.gameObject.SetActive(false);
         shootPanel.SetActive(false);
+        backgroundImage.sprite = imgInicial; // Imagen inicial
 
         // Asignamos los eventos a los botones
         startButton.onClick.AddListener(StartGame);
@@ -64,11 +75,16 @@ public class RuletaRusa : MonoBehaviour
     {
         esTurnoDelJugador = false;
         shootPanel.SetActive(false);
+        backgroundImage.sprite = imgInicial; // Mostrar imagen inicial mientras el dealer elige
+        yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
+
         int decision = Random.Range(0, 100); 
         Debug.Log("El dealer esta eligiendo..."); 
 
         if (decision < 50) 
         {
+            backgroundImage.sprite = imgDealerDispara; // Cambiar imagen antes del diálogo
+            yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
             dealerText.text = "Veamos si la suerte te acompaña...";
             Debug.Log("El dealer eligio dispararte");
             yield return new WaitForSeconds(3f); // Espera 3 segundos
@@ -76,6 +92,8 @@ public class RuletaRusa : MonoBehaviour
         }
         else if (decision < 80) 
         {
+            backgroundImage.sprite = imgDealerSuicida; // Cambiar imagen antes del diálogo
+            yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
             dealerText.text = "Espero tener suerte...";
             Debug.Log("El dealer eligio dispararse"); 
             yield return new WaitForSeconds(3f); // Espera 3 segundos
@@ -83,6 +101,8 @@ public class RuletaRusa : MonoBehaviour
         }
         else 
         {
+            backgroundImage.sprite = imgDealerGira; // Cambiar imagen antes del diálogo
+            yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
             dealerText.text = "Hagamoslo más interesante";
             Debug.Log("El dealer giro el barril"); 
             yield return new WaitForSeconds(3f); // Espera 3 segundos
@@ -94,12 +114,16 @@ public class RuletaRusa : MonoBehaviour
     {
         posicionActual = (posicionActual + 1) % barril.Length;
         dealerText.text = "Haz que giren.";
+        backgroundImage.sprite = esTurnoDelJugador ? imgJugadorGira : imgDealerGira;
+        yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
         yield return new WaitForSeconds(3f); // Espera 3 segundos
 
         if (!esTurnoDelJugador)
         {
             esTurnoDelJugador = true;
             shootPanel.SetActive(true);
+            backgroundImage.sprite = imgInicial; // Mostrar imagen inicial mientras el jugador elige
+            yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
             Debug.Log("Ahora es el turno del jugador");
         }
         else
@@ -111,13 +135,15 @@ public class RuletaRusa : MonoBehaviour
 
     IEnumerator Disparar(bool dispararAlJugador)
     {
-        if (posicionActual == balaReal) // Comparación corregida
+        if (posicionActual == balaReal) 
         {
             if (dispararAlJugador)
             {
                 if (esTurnoDelJugador)
                 {
                     dealerText.text = "El dealer ha muerto...";
+                    backgroundImage.sprite = imgDealerMuerto;
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("El dealer ha muerto");
                 }
                 else
@@ -131,11 +157,15 @@ public class RuletaRusa : MonoBehaviour
                 if (esTurnoDelJugador)
                 {
                     dealerText.text = "No eres muy listo...";
+                    backgroundImage.sprite = imgJugadorSuicida; // Mostrar imagen del jugador suicidándose
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Haz muerto");
                 }
                 else
                 {
                     dealerText.text = "El dealer ha muerto...";
+                    backgroundImage.sprite = imgDealerMuerto;
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("El dealer ha muerto");
                 }
             }
@@ -150,6 +180,8 @@ public class RuletaRusa : MonoBehaviour
                 if (esTurnoDelJugador)
                 {
                     dealerText.text = "Ahora es mi turno...";
+                    backgroundImage.sprite = imgJugadorDispara;
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Ahora es el turno del dealer");
                     AvanzarBarril();
                     yield return new WaitForSeconds(3f); // Espera 3 segundos
@@ -158,10 +190,14 @@ public class RuletaRusa : MonoBehaviour
                 else
                 {
                     dealerText.text = "Vas con suerte...";
+                    backgroundImage.sprite = imgDealerDispara;
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Ahora es el turno del jugador");
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
+                    backgroundImage.sprite = imgInicial; // Mostrar imagen inicial mientras el jugador elige
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                 }
             }
             else
@@ -169,14 +205,20 @@ public class RuletaRusa : MonoBehaviour
                 if (esTurnoDelJugador)
                 {
                     dealerText.text = "Vas con suerte...";
+                    backgroundImage.sprite = imgJugadorSuicida; // Mostrar imagen del jugador suicidándose
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Ahora es el turno del jugador");
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
+                    backgroundImage.sprite = imgInicial; // Mostrar imagen inicial mientras el jugador elige
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                 }
                 else
                 {
                     dealerText.text = "Otra vez mi turno...";
+                    backgroundImage.sprite = imgDealerSuicida;
+                    yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Ahora es el turno del dealer");
                     AvanzarBarril();
                     yield return new WaitForSeconds(3f); // Espera 3 segundos
