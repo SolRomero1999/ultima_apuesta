@@ -15,6 +15,7 @@ public class RuletaRusa : MonoBehaviour
     public Button girarBarrilButton;    // Botón para girar el barril
     public Image backgroundImage; // Imagen de fondo
     public GameObject blackScreen; // Pantalla negra
+    public GameObject dialogueBubble; // Globo de diálogo
 
     public Sprite imgInicial;         // Imagen del arma en la mesa
     public Sprite imgDealerGira;      // Imagen del dealer girando la recámara
@@ -39,6 +40,7 @@ public class RuletaRusa : MonoBehaviour
         shootPanel.SetActive(false);
         backgroundImage.sprite = imgInicial; // Imagen inicial
         blackScreen.SetActive(false); // Desactivar la pantalla negra al inicio
+        dialogueBubble.SetActive(false); // Desactivar el globo de diálogo al inicio
 
         // Asignamos los eventos a los botones
         startButton.onClick.AddListener(StartGame);
@@ -52,6 +54,7 @@ public class RuletaRusa : MonoBehaviour
         // Inicia el juego, oculta las reglas y comienza la acción
         rulesPanel.SetActive(false);
         dealerText.gameObject.SetActive(true);
+        dialogueBubble.SetActive(true); // Activar el globo de diálogo
         dealerText.text = "Si no te molesta, empezaré yo";
         Debug.Log("Mensaje inicial del dealer");
         StartCoroutine(EsperarYEmpezar()); // Espera antes de comenzar las acciones
