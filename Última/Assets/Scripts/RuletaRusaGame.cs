@@ -14,6 +14,7 @@ public class RuletaRusa : MonoBehaviour
     public Button dispararseButton;     // Botón para dispararse a sí mismo
     public Button girarBarrilButton;    // Botón para girar el barril
     public Image backgroundImage; // Imagen de fondo
+    public GameObject blackScreen; // Pantalla negra
 
     public Sprite imgInicial;         // Imagen del arma en la mesa
     public Sprite imgDealerGira;      // Imagen del dealer girando la recámara
@@ -37,6 +38,7 @@ public class RuletaRusa : MonoBehaviour
         dealerText.gameObject.SetActive(false);
         shootPanel.SetActive(false);
         backgroundImage.sprite = imgInicial; // Imagen inicial
+        blackScreen.SetActive(false); // Desactivar la pantalla negra al inicio
 
         // Asignamos los eventos a los botones
         startButton.onClick.AddListener(StartGame);
@@ -150,6 +152,7 @@ public class RuletaRusa : MonoBehaviour
                 {
                     dealerText.text = "No es tu día...";
                     Debug.Log("Haz muerto");
+                    yield return StartCoroutine(PlayerDeath()); // Pantalla negra y transición a Game Over
                 }
             }
             else
@@ -160,6 +163,7 @@ public class RuletaRusa : MonoBehaviour
                     backgroundImage.sprite = imgJugadorSuicida; // Mostrar imagen del jugador suicidándose
                     yield return new WaitForSeconds(0.5f); // Espera 0.5 segundos para que la imagen se actualice
                     Debug.Log("Haz muerto");
+                    yield return StartCoroutine(PlayerDeath()); // Pantalla negra y transición a Game Over
                 }
                 else
                 {
@@ -232,6 +236,13 @@ public class RuletaRusa : MonoBehaviour
     {
         posicionActual = (posicionActual + 1) % barril.Length;
         Debug.Log("Barril avanzado. Nueva posición: " + posicionActual);
+    }
+
+    IEnumerator PlayerDeath()
+    {
+        blackScreen.SetActive(true); // Activar la pantalla negra
+        yield return new WaitForSeconds(2f); // Esperar 2 segundos
+        SceneManager.LoadScene("GameOver"); // Cargar la escena de Game Over
     }
 
     IEnumerator EndGame()

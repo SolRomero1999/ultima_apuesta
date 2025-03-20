@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Ruleta_Rusa.unity
     guid: 84063f64f26957d43a1d8262664a993d
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: ef24d1ab252f2ae40a0a81e65e1fb5f7
   m_configObjects: {}

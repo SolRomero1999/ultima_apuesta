@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     private Animator animator;
     private Vector3 targetPosition;
     private bool isMoving = false;
+    public bool canMove = true; // Variable para controlar si el personaje puede moverse
 
     void Start()
     {
@@ -14,6 +15,17 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        if (!canMove)
+        {
+            // Forzar la animación de "Idle" cuando no puede moverse
+            animator.SetBool("isIdle", true);
+            animator.SetBool("isWalkingUp", false);
+            animator.SetBool("isWalkingDown", false);
+            animator.SetBool("isWalkingLeft", false);
+            animator.SetBool("isWalkingRight", false);
+            return; // Salir del método si no puede moverse
+        }
+
         if (Input.GetMouseButtonDown(0)) // Detectar el clic izquierdo del mouse
         {
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -76,15 +88,20 @@ public class PlayerMovement : MonoBehaviour
         else
         {
             // Cuando el personaje llega a la posición objetivo
-            isMoving = false; // Detener el movimiento
-            animator.SetBool("isIdle", true); // Activar "Idle"
-
-            // Asegurarse de que los bools de caminar se desactiven
-            animator.SetBool("isWalkingUp", false);
-            animator.SetBool("isWalkingDown", false);
-            animator.SetBool("isWalkingLeft", false);
-            animator.SetBool("isWalkingRight", false);
+            StopMovement(); // Detener el movimiento
         }
     }
-}
 
+    // Método para detener el movimiento
+    public void StopMovement()
+    {
+        isMoving = false; // Detener el movimiento
+        animator.SetBool("isIdle", true); // Activar "Idle"
+
+        // Asegurarse de que los bools de caminar se desactiven
+        animator.SetBool("isWalkingUp", false);
+        animator.SetBool("isWalkingDown", false);
+        animator.SetBool("isWalkingLeft", false);
+        animator.SetBool("isWalkingRight", false);
+    }
+}
