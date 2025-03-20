@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Par_Impar.unity
     guid: 2d2848f12c89d0444b24bccfff58f69c
+  - enabled: 1
+    path: Assets/Scenes/Ruleta_Rusa.unity
+    guid: 84063f64f26957d43a1d8262664a993d
   m_configObjects: {}
