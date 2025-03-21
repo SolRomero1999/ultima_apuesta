@@ -9,6 +9,7 @@ public class GameTrigger : MonoBehaviour
     [SerializeField] private string dialogMessage; // Mensaje personalizado para el diálogo
     [SerializeField] private GameObject dialogPrefab; // Prefab del diálogo (con Panel, TMP_Text y Buttons)
     [SerializeField] private bool showOnlyMessage = false; // Mostrar solo un mensaje con un botón "Claro"
+    [SerializeField] private Sprite dialogBackgroundImage; // Imagen de fondo para el diálogo (opcional)
 
     private GameObject dialogInstance; // Instancia del diálogo
     private PlayerMovement playerMovement; // Referencia al script de movimiento del jugador
@@ -54,6 +55,21 @@ public class GameTrigger : MonoBehaviour
 
         // Asigna el mensaje personalizado
         messageText.text = dialogMessage;
+
+        // Configura la imagen de fondo si está asignada y no es un diálogo de solo mensaje
+        Image backgroundImage = dialogInstance.transform.Find("DialogBackground")?.GetComponent<Image>();
+        if (backgroundImage != null)
+        {
+            if (!showOnlyMessage && dialogBackgroundImage != null)
+            {
+                backgroundImage.sprite = dialogBackgroundImage; // Asigna la nueva imagen de fondo
+                backgroundImage.gameObject.SetActive(true); // Activa la imagen de fondo
+            }
+            else
+            {
+                backgroundImage.gameObject.SetActive(false); // Desactiva la imagen de fondo si no es necesaria
+            }
+        }
 
         if (showOnlyMessage)
         {

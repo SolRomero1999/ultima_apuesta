@@ -671,8 +671,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -646.5616, y: -277.8195}
+  m_AnchoredPosition: {x: 0, y: 11.276184}
+  m_SizeDelta: {x: -627.8414, y: -261.1584}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &403859197
 MonoBehaviour:
@@ -2181,7 +2181,7 @@ MonoBehaviour:
     el jugador puede elegir entre disparar al rival, dispararse a s\xED mismo o girar
     el barril.  \r\n3. Si dispara y hay una bala en la rec\xE1mara, el objetivo del
     disparo pierde y el juego termina.  \r\n4. Si la rec\xE1mara est\xE1 vac\xEDa,
-    el turno pasa al oponente.  \r\n5. Si se opto por dispararse a uno mismo y sobrevivio
+    el turno pasa al oponente.  \n5. Si se opto por dispararse a uno mismo y sobrevivio
     cuenta con otro turno.\n6. Si decide girar el barril, la bala cambia de posici\xF3n
     y el turno pasa.  \r\n7. El juego termina cuando uno de los dos recibe el disparo
     fatal."
