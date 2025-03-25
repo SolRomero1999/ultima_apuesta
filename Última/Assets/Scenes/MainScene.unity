@@ -406,7 +406,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 374, y: -439}
+  m_AnchoredPosition: {x: 0, y: -439}
   m_SizeDelta: {x: 560, y: 88.403}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &474722127
@@ -945,7 +945,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 374, y: -503.20148}
+  m_AnchoredPosition: {x: 0, y: -503.20148}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &790759649
@@ -1063,7 +1063,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80800ec717964bf448a3373a2f2c4000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 10
+  moveSpeed: 15
   canMove: 1
 --- !u!50 &830584567
 Rigidbody2D:
@@ -1259,8 +1259,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 460, y: -39}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 639.5963, y: -179.62732}
+  m_SizeDelta: {x: 64.0807, y: 71.8745}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &834955435
 MonoBehaviour:
@@ -1864,6 +1864,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1280031554}
   m_CullTransparentMesh: 1
+--- !u!1 &1400126388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1400126389}
+  - component: {fileID: 1400126391}
+  - component: {fileID: 1400126390}
+  m_Layer: 5
+  m_Name: Panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1400126389
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400126388}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1802957816}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -442.13934}
+  m_SizeDelta: {x: 0, y: -884.2786}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1400126390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400126388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.392}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1400126391
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400126388}
+  m_CullTransparentMesh: 1
 --- !u!1 &1439082049
 GameObject:
   m_ObjectHideFlags: 0
@@ -2182,7 +2257,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 174, y: -503.20148}
+  m_AnchoredPosition: {x: -200, y: -503.20148}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1624811038
@@ -2414,7 +2489,7 @@ MonoBehaviour:
   dialogMessage: "\xBFQuieres jugar par o impar conmigo?"
   dialogPrefab: {fileID: 1802957815}
   showOnlyMessage: 0
-  dialogBackgroundImage: {fileID: 21300000, guid: 08c48c74f11b462469147b7b046dae87, type: 3}
+  dialogBackgroundImage: {fileID: 21300000, guid: 7bf913374c8d9e14c984ab9b8bf0a86a, type: 3}
 --- !u!1 &1704280324
 GameObject:
   m_ObjectHideFlags: 0
@@ -2451,7 +2526,7 @@ MonoBehaviour:
   dialogMessage: "\xBFQuieres jugar a la Ruleta Rusa conmigo?"
   dialogPrefab: {fileID: 1802957815}
   showOnlyMessage: 0
-  dialogBackgroundImage: {fileID: 21300000, guid: ba17fa19863ed6f49b0b8b81ec304784, type: 3}
+  dialogBackgroundImage: {fileID: 21300000, guid: 25361980e65f31c46ade8e3ea5fdd849, type: 3}
 --- !u!61 &1704280326
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2615,11 +2690,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 834955434}
+  - {fileID: 1400126389}
   - {fileID: 474722126}
   - {fileID: 1624811037}
   - {fileID: 2133761137}
   - {fileID: 790759648}
+  - {fileID: 834955434}
   m_Father: {fileID: 174381936}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2853,7 +2929,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 574, y: -503.20148}
+  m_AnchoredPosition: {x: 200, y: -503.20148}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2133761138
