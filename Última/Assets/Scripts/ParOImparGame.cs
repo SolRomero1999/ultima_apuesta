@@ -117,7 +117,6 @@ public class ParOImparGame : MonoBehaviour
             backgroundImage.sprite = imgInicial; 
             yield return new WaitForSeconds(2f); 
             
-            // Lógica para singular/plural
             if(dealerNumber == 1)
             {
                 dealerText.text = "¡Ups! Fallaste, era 1 diente.";
@@ -209,7 +208,17 @@ public class ParOImparGame : MonoBehaviour
 
         bool dealerGuess = Random.Range(0, 2) == 0;
 
-        dealerText.text = "Creo que el número es " + (dealerGuess ? "Par" : "Impar");
+        // Caso especial cuando al jugador solo le queda 1 diente
+        if (playerTeeth == 1 && betAmount == 1)
+        {
+            dealerGuess = false; // Forzar impar porque 1 es impar
+            dealerText.text = "Sé que solo te queda 1, apuesto por Impar.";
+        }
+        else
+        {
+            dealerText.text = "Creo que el número es " + (dealerGuess ? "Par" : "Impar");
+        }
+        
         yield return new WaitForSeconds(2f);
         yield return StartCoroutine(WaitAndShowResult(dealerGuess));
     }
@@ -220,27 +229,25 @@ public class ParOImparGame : MonoBehaviour
 
         bool isBetPar = (betAmount % 2 == 0);
 
-    if (dealerGuess == isBetPar)
-    {
-        dealerTeeth += betAmount;
-        playerTeeth -= betAmount;
-        
-        // Lógica para singular/plural
-        if(betAmount == 1)
+        if (dealerGuess == isBetPar)
         {
-            dealerText.text = "¡Adiviné! Dame ese diente.";
+            dealerTeeth += betAmount;
+            playerTeeth -= betAmount;
+            
+            if(betAmount == 1)
+            {
+                dealerText.text = "¡Adiviné! Dame ese diente.";
+            }
+            else
+            {
+                dealerText.text = $"¡Adiviné! Dame esos dientes.";
+            }
         }
         else
-        {
-            dealerText.text = $"¡Adiviné! Dame esos dientes.";
-        }
-    }
-    else
         {
             dealerTeeth -= betAmount;
             playerTeeth += betAmount;
             
-            // Lógica para singular/plural
             if(betAmount == 1)
             {
                 dealerText.text = "¡Fallé! Toma 1 diente.";
@@ -250,6 +257,7 @@ public class ParOImparGame : MonoBehaviour
                 dealerText.text = $"¡Fallé! Toma {betAmount} dientes.";
             }
         }
+
         playerTeethText.text = "Tienes " + playerTeeth + " Dientes";
 
         yield return new WaitForSeconds(2f);
