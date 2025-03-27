@@ -20,7 +20,7 @@ public class ParOImparGame : MonoBehaviour
     public Image toothImage;     
     public Image backgroundImage; 
     public GameObject blackScreen; 
-    public GameObject dialogueBubble; 
+    public GameObject dialoguePanel; 
     public Sprite imgInicial;        
     public Sprite imgDealerPensando;      
     public Sprite imgDealerApostando;   
@@ -43,7 +43,7 @@ public class ParOImparGame : MonoBehaviour
         imparButton.gameObject.SetActive(false);
         betPanel.SetActive(false);
         blackScreen.SetActive(false);
-        playerTeethText.text = "Tienes " + playerTeeth + " Dientes";
+        playerTeethText.text = playerTeeth.ToString();
         startButton.onClick.AddListener(StartGame);
         increaseBetButton.onClick.AddListener(IncreaseBet);
         decreaseBetButton.onClick.AddListener(DecreaseBet);
@@ -54,7 +54,7 @@ public class ParOImparGame : MonoBehaviour
     {
         rulesPanel.SetActive(false); 
         dealerText.gameObject.SetActive(true);
-        dialogueBubble.SetActive(true);
+        dialoguePanel.SetActive(true);
         playerTeethText.gameObject.SetActive(true);
         parButton.gameObject.SetActive(false);
         imparButton.gameObject.SetActive(false);
@@ -130,7 +130,7 @@ public class ParOImparGame : MonoBehaviour
             dealerTeeth += dealerNumber;
         }
 
-        playerTeethText.text = "Tienes " + playerTeeth + " Dientes";
+        playerTeethText.text = playerTeeth.ToString();
 
         yield return new WaitForSeconds(2f);
 
@@ -258,7 +258,7 @@ public class ParOImparGame : MonoBehaviour
             }
         }
 
-        playerTeethText.text = "Tienes " + playerTeeth + " Dientes";
+        playerTeethText.text = playerTeeth.ToString();
 
         yield return new WaitForSeconds(2f);
 

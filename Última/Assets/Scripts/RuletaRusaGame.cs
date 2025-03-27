@@ -15,7 +15,7 @@ public class RuletaRusa : MonoBehaviour
     public Button girarBarrilButton;    
     public Image backgroundImage; 
     public GameObject blackScreen; 
-    public GameObject dialogueBubble; 
+    public GameObject dialoguePanel; 
 
     public Sprite imgInicial;        
     public Sprite imgDealerGira;     
@@ -25,6 +25,10 @@ public class RuletaRusa : MonoBehaviour
     public Sprite imgJugadorSuicida; 
     public Sprite imgJugadorGira;    
     public Sprite imgDealerMuerto;    
+    public AudioSource audioSource;     
+    public AudioClip disparoClip;   
+    public AudioClip disparoFallidoClip;     
+    public AudioClip girarClip;     
 
     private int[] barril = { 1, 2, 3, 4, 5, 6 }; 
     private int posicionActual; 
@@ -39,7 +43,7 @@ public class RuletaRusa : MonoBehaviour
         shootPanel.SetActive(false);
         backgroundImage.sprite = imgInicial; 
         blackScreen.SetActive(false); 
-        dialogueBubble.SetActive(false); 
+        dialoguePanel.SetActive(false); 
 
         startButton.onClick.AddListener(StartGame);
         dispararDealerButton.onClick.AddListener(() => StartCoroutine(Disparar(true)));
@@ -51,14 +55,14 @@ public class RuletaRusa : MonoBehaviour
     {
         rulesPanel.SetActive(false);
         dealerText.gameObject.SetActive(true);
-        dialogueBubble.SetActive(true); 
+        dialoguePanel.SetActive(true); 
         dealerText.text = "Si no te molesta, empezaré yo";
         StartCoroutine(EsperarYEmpezar()); 
     }
 
     IEnumerator EsperarYEmpezar()
     {
-        yield return new WaitForSeconds(3f); 
+        yield return new WaitForSeconds(2f); 
         PosicionInicial();
         StartCoroutine(DealerTurn()); 
     }
@@ -74,32 +78,29 @@ public class RuletaRusa : MonoBehaviour
         esTurnoDelJugador = false;
         shootPanel.SetActive(false);
         backgroundImage.sprite = imgInicial; 
-        yield return new WaitForSeconds(0.5f); 
+        yield return new WaitForSeconds(2f); 
 
         int decision = Random.Range(0, 100); 
 
         if (decision < 50) 
         {
             backgroundImage.sprite = imgDealerDispara; 
-            yield return new WaitForSeconds(0.5f); 
             dealerText.text = "Veamos si la suerte te acompaña...";
-            yield return new WaitForSeconds(3f); 
+            yield return new WaitForSeconds(2f); 
             yield return StartCoroutine(Disparar(true)); 
         }
         else if (decision < 80) 
         {
             backgroundImage.sprite = imgDealerSuicida; 
-            yield return new WaitForSeconds(0.5f); 
             dealerText.text = "Espero tener suerte...";
-            yield return new WaitForSeconds(3f);
+            yield return new WaitForSeconds(2f);
             yield return StartCoroutine(Disparar(false)); 
         }
         else 
         {
             backgroundImage.sprite = imgDealerGira; 
-            yield return new WaitForSeconds(0.5f); 
             dealerText.text = "Hagamoslo más interesante";
-            yield return new WaitForSeconds(3f); 
+            yield return new WaitForSeconds(2f); 
             yield return StartCoroutine(GirarBarril());
         }
     }
@@ -107,17 +108,17 @@ public class RuletaRusa : MonoBehaviour
     IEnumerator GirarBarril()
     {
         posicionActual = (posicionActual + 1) % barril.Length;
+        audioSource.PlayOneShot(girarClip);
         dealerText.text = "Haz que giren.";
         backgroundImage.sprite = esTurnoDelJugador ? imgJugadorGira : imgDealerGira;
-        yield return new WaitForSeconds(0.5f); 
-        yield return new WaitForSeconds(3f); 
+        yield return new WaitForSeconds(2f); 
 
         if (!esTurnoDelJugador)
         {
             esTurnoDelJugador = true;
             shootPanel.SetActive(true);
             backgroundImage.sprite = imgInicial; 
-            yield return new WaitForSeconds(0.5f); 
+            yield return new WaitForSeconds(2f); 
         }
         else
         {
@@ -133,12 +134,14 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
+                    audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "El dealer ha muerto...";
                     backgroundImage.sprite = imgDealerMuerto;
-                    yield return new WaitForSeconds(0.5f); 
+                    yield return new WaitForSeconds(2f); 
                 }
                 else
                 {
+                    audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "No es tu día...";
                     yield return StartCoroutine(PlayerDeath()); 
                 }
@@ -147,20 +150,22 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
+                    audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "No eres muy listo...";
                     backgroundImage.sprite = imgJugadorSuicida; 
-                    yield return new WaitForSeconds(0.5f); 
+                    yield return new WaitForSeconds(2f); 
                     yield return StartCoroutine(PlayerDeath()); 
                 }
                 else
                 {
+                    audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "El dealer ha muerto...";
                     backgroundImage.sprite = imgDealerMuerto;
-                    yield return new WaitForSeconds(0.5f); 
+                    yield return new WaitForSeconds(2f); 
                 }
             }
             gameOver = true;
-            yield return new WaitForSeconds(3f); 
+            yield return new WaitForSeconds(2f); 
             StartCoroutine(EndGame());
         }
         else
@@ -169,45 +174,45 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
+                    audioSource.PlayOneShot(disparoFallidoClip);
                     dealerText.text = "Ahora es mi turno...";
                     backgroundImage.sprite = imgJugadorDispara;
-                    yield return new WaitForSeconds(0.5f);
                     AvanzarBarril();
-                    yield return new WaitForSeconds(3f); 
+                    yield return new WaitForSeconds(2f); 
                     yield return StartCoroutine(DealerTurn());
                 }
                 else
                 {
+                    audioSource.PlayOneShot(disparoFallidoClip);
                     dealerText.text = "Vas con suerte...";
                     backgroundImage.sprite = imgDealerDispara;
-                    yield return new WaitForSeconds(0.5f); 
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
                     backgroundImage.sprite = imgInicial; 
-                    yield return new WaitForSeconds(0.5f); 
+                    yield return new WaitForSeconds(2f); 
                 }
             }
             else
             {
                 if (esTurnoDelJugador)
                 {
+                    audioSource.PlayOneShot(disparoFallidoClip);
                     dealerText.text = "Vas con suerte...";
                     backgroundImage.sprite = imgJugadorSuicida; 
-                    yield return new WaitForSeconds(0.5f); 
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
                     backgroundImage.sprite = imgInicial;
-                    yield return new WaitForSeconds(0.5f); 
+                    yield return new WaitForSeconds(2f); 
                 }
                 else
                 {
+                    audioSource.PlayOneShot(disparoFallidoClip);
                     dealerText.text = "Otra vez mi turno...";
                     backgroundImage.sprite = imgDealerSuicida;
-                    yield return new WaitForSeconds(0.5f);
                     AvanzarBarril();
-                    yield return new WaitForSeconds(3f); 
+                    yield return new WaitForSeconds(2f); 
                     yield return StartCoroutine(DealerTurn());
                 }
             }
@@ -228,7 +233,7 @@ public class RuletaRusa : MonoBehaviour
 
     IEnumerator EndGame()
     {
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("MainScene");
     }
 }

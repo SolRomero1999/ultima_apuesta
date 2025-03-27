@@ -91,7 +91,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetBool("isWalkingLeft", false);
         animator.SetBool("isWalkingRight", false);
 
-        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+        if (Mathf.Abs(direction.x) * 0.7f > Mathf.Abs(direction.y))
         {
             animator.SetBool(direction.x > 0 ? "isWalkingRight" : "isWalkingLeft", true);
         }
