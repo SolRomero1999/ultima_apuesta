@@ -25,6 +25,9 @@ public class ParOImparGame : MonoBehaviour
     public Sprite imgDealerPensando;      
     public Sprite imgDealerApostando;   
     public Sprite imgPlayerApostando;   
+    public AudioSource audioSource;     
+    public AudioClip RisaClip;   
+    public AudioClip QuejidoClip;   
 
     private int playerTeeth = 10;  
     private int dealerTeeth = 10;  
@@ -87,7 +90,7 @@ public class ParOImparGame : MonoBehaviour
 
         dealerText.text = "Ok, ya elegí un número. ¿Crees que es Par o Impar?";
         backgroundImage.sprite = imgDealerApostando; 
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
 
         parButton.gameObject.SetActive(true);
         imparButton.gameObject.SetActive(true);
@@ -108,7 +111,8 @@ public class ParOImparGame : MonoBehaviour
         {        
             backgroundImage.sprite = imgInicial; 
             yield return new WaitForSeconds(2f); 
-            dealerText.text = "¡Bien hecho! ¡Tienes suerte!";
+            //audioSource.PlayOneShot(QuejidoClip);
+            dealerText.text = "Tienes suerte...";
             playerTeeth += dealerNumber;
             dealerTeeth -= dealerNumber;
         }
@@ -119,10 +123,12 @@ public class ParOImparGame : MonoBehaviour
             
             if(dealerNumber == 1)
             {
+                //audioSource.PlayOneShot(RisaClip);
                 dealerText.text = "¡Ups! Fallaste, era 1 diente.";
             }
             else
             {
+                //audioSource.PlayOneShot(RisaClip);
                 dealerText.text = $"¡Ups! Fallaste, eran {dealerNumber} dientes.";
             }
             
@@ -136,18 +142,21 @@ public class ParOImparGame : MonoBehaviour
 
         if (playerTeeth >= 20)
         {
+            //audioSource.PlayOneShot(QuejidoClip);
             dealerText.text = "¡Alcanzaste los 20!";
             gameOver = true;
             StartCoroutine(EndGame(true));
         }
         else if (playerTeeth <= 0)
         {
+            //audioSource.PlayOneShot(RisaClip);
             dealerText.text = "Te quedaste sin dientes... Que lastima";
             gameOver = true;
             StartCoroutine(EndGame(false));
         }
         else if (dealerTeeth <= 0)
         {
+            //audioSource.PlayOneShot(QuejidoClip);
             dealerText.text = "¡Me quede sin dientes!";
             gameOver = true;
             StartCoroutine(EndGame(true));
@@ -208,10 +217,10 @@ public class ParOImparGame : MonoBehaviour
 
         bool dealerGuess = Random.Range(0, 2) == 0;
 
-        // Caso especial cuando al jugador solo le queda 1 diente
         if (playerTeeth == 1 && betAmount == 1)
         {
-            dealerGuess = false; // Forzar impar porque 1 es impar
+            dealerGuess = false; 
+            //audioSource.PlayOneShot(RisaClip);
             dealerText.text = "Sé que solo te queda 1, apuesto por Impar.";
         }
         else
@@ -236,10 +245,12 @@ public class ParOImparGame : MonoBehaviour
             
             if(betAmount == 1)
             {
+                //audioSource.PlayOneShot(RisaClip);
                 dealerText.text = "¡Adiviné! Dame ese diente.";
             }
             else
             {
+                //audioSource.PlayOneShot(RisaClip);
                 dealerText.text = $"¡Adiviné! Dame esos dientes.";
             }
         }
@@ -250,10 +261,12 @@ public class ParOImparGame : MonoBehaviour
             
             if(betAmount == 1)
             {
+                //audioSource.PlayOneShot(QuejidoClip);
                 dealerText.text = "¡Fallé! Toma 1 diente.";
             }
             else
             {
+                //audioSource.PlayOneShot(QuejidoClip);
                 dealerText.text = $"¡Fallé! Toma {betAmount} dientes.";
             }
         }
