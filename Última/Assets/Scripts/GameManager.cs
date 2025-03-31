@@ -4,6 +4,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
+    private bool postRuletaDialogsSeen = false;
 
     // Orden de los minijuegos
     private List<string> minigamesOrder = new List<string>
@@ -57,5 +58,15 @@ public class GameManager : MonoBehaviour
     public bool IsMinigameCompleted(string sceneName)
     {
         return completedMinigames.Contains(sceneName);
+    }
+
+    public bool HasSeenPostRuletaDialogs()
+    {
+        return postRuletaDialogsSeen;
+    }
+
+    public void MarkPostRuletaDialogsSeen()
+    {
+        postRuletaDialogsSeen = true;
     }
 }

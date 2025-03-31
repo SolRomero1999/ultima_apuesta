@@ -230,9 +230,14 @@ public class RuletaRusa : MonoBehaviour
         yield return new WaitForSeconds(2f); 
         SceneManager.LoadScene("MainScene"); 
     }
-
     IEnumerator EndGame()
     {
+        // Notificar al GameManager que este minijuego fue completado
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.CompleteMinigame("Ruleta_Rusa");
+        }
+        
         yield return new WaitForSeconds(2f);
         SceneManager.LoadScene("MainScene");
     }
