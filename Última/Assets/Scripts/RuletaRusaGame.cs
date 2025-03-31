@@ -228,7 +228,7 @@ public class RuletaRusa : MonoBehaviour
     {
         blackScreen.SetActive(true); 
         yield return new WaitForSeconds(2f); 
-        SceneManager.LoadScene("GameOver"); 
+        SceneManager.LoadScene("MainScene"); 
     }
 
     IEnumerator EndGame()

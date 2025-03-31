@@ -10,7 +10,7 @@ public class GameTrigger : MonoBehaviour
     [SerializeField] private GameObject dialogPrefab; 
     [SerializeField] private bool showOnlyMessage = false; 
     [SerializeField] private Sprite dialogBackgroundImage; 
-    [SerializeField] private bool isSpecialMessage = false;  // Nueva variable para manejar el caso especial
+    [SerializeField] private bool isSpecialMessage = false;
 
     private GameObject dialogInstance; 
     private PlayerMovement playerMovement; 
@@ -49,7 +49,7 @@ public class GameTrigger : MonoBehaviour
             return;
         }
 
-        // Configurar imagen de fondo si existe
+        // Configurar imagen de fondo
         Image backgroundImage = dialogInstance.transform.Find("DialogBackground")?.GetComponent<Image>();
         if (backgroundImage != null && dialogBackgroundImage != null)
         {
@@ -64,7 +64,7 @@ public class GameTrigger : MonoBehaviour
 
         if (showOnlyMessage) 
         {
-            // MODO SOLO MENSAJE (para mesas vacías)
+            // MODO SOLO MENSAJE
             messageText.text = dialogMessage;
 
             if (clearButton != null)
@@ -78,7 +78,7 @@ public class GameTrigger : MonoBehaviour
         }
         else if (isSpecialMessage) 
         {
-            // MODO MENSAJE ESPECIAL (para casos especiales, con botones Sí/No)
+            // MODO MENSAJE ESPECIAL
             messageText.text = dialogMessage;
             
             if (yesButton != null)
@@ -97,10 +97,24 @@ public class GameTrigger : MonoBehaviour
         }
         else
         {
-            // MODO JUEGO (para bar, par/impar, etc.)
-            if (CanEnterMinigame())
+            // MODO JUEGO
+            if (GameManager.instance != null && GameManager.instance.IsMinigameCompleted(sceneToLoad))
             {
-                // Puede jugar - mostrar mensaje normal y botones Sí/No
+                // Caso: Minijuego ya completado
+                messageText.text = "¡Ya completaste este desafío! Ve al siguiente juego.";
+                
+                if (clearButton != null)
+                {
+                    clearButton.onClick.AddListener(OnClearClicked);
+                    clearButton.gameObject.SetActive(true);
+                }
+                
+                if (yesButton != null) yesButton.gameObject.SetActive(false);
+                if (noButton != null) noButton.gameObject.SetActive(false);
+            }
+            else if (CanEnterMinigame())
+            {
+                // Caso: Puede jugar el minijuego
                 messageText.text = dialogMessage;
                 
                 if (yesButton != null) 
@@ -119,7 +133,7 @@ public class GameTrigger : MonoBehaviour
             }
             else
             {
-                // No puede jugar aún - mostrar mensaje de "no listo" y solo botón Claro
+                // Caso: No puede jugar aún
                 messageText.text = "Aún no estás listo... date una vuelta.";
                 
                 if (clearButton != null)
@@ -137,6 +151,8 @@ public class GameTrigger : MonoBehaviour
     private bool CanEnterMinigame()
     {
         if (GameManager.instance == null) return true;
+        
+        // Verificar si puede jugar este minijuego según el orden de progreso
         return GameManager.instance.CanPlay(sceneToLoad);
     }
 
@@ -145,11 +161,6 @@ public class GameTrigger : MonoBehaviour
         if (playerMovement != null)
         {
             playerMovement.canMove = true; 
-        }
-
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.AdvanceProgress(sceneToLoad);
         }
 
         SceneManager.LoadScene(sceneToLoad); 

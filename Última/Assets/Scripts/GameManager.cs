@@ -5,13 +5,15 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
+    // Orden de los minijuegos
     private List<string> minigamesOrder = new List<string>
     {
         "Par_Impar",
         "Ruleta_Rusa"
     };
 
-    private int currentMinigameIndex = 0;
+    // Lista de minijuegos completados
+    private List<string> completedMinigames = new List<string>();
 
     private void Awake()
     {
@@ -28,18 +30,32 @@ public class GameManager : MonoBehaviour
 
     public bool CanPlay(string sceneName)
     {
-        if (currentMinigameIndex < minigamesOrder.Count)
-        {
-            return minigamesOrder[currentMinigameIndex] == sceneName;
-        }
+        // Si no es un minijuego controlado, permitir jugar
+        if (!minigamesOrder.Contains(sceneName)) return true;
+
+        // Si es el primer minijuego y no se ha completado ningún minijuego
+        if (sceneName == minigamesOrder[0] && completedMinigames.Count == 0)
+            return true;
+
+        // Si no es el primer minijuego, verificar si el anterior está completado
+        int index = minigamesOrder.IndexOf(sceneName);
+        if (index > 0 && completedMinigames.Contains(minigamesOrder[index - 1]))
+            return true;
+
         return false;
     }
 
-    public void AdvanceProgress(string sceneName)
+    public void CompleteMinigame(string sceneName)
     {
-        if (currentMinigameIndex < minigamesOrder.Count && minigamesOrder[currentMinigameIndex] == sceneName)
+        if (!completedMinigames.Contains(sceneName))
         {
-            currentMinigameIndex++;
+            completedMinigames.Add(sceneName);
+            Debug.Log("Minijuego completado: " + sceneName);
         }
+    }
+
+    public bool IsMinigameCompleted(string sceneName)
+    {
+        return completedMinigames.Contains(sceneName);
     }
 }
