@@ -145,9 +145,20 @@ public class PostRuletaDialogManager : MonoBehaviour
 
     private void OnJuezClicked()
     {
-        // Lógica para convertirse en juez
-        SceneManager.LoadScene("EndGame"); // O la escena que corresponda
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.SetPlayerAsJudge();
+        }
+
+        BartenderController bartender = FindObjectOfType<BartenderController>();
+        if (bartender != null)
+        {
+            bartender.SetAlternateState(); // Cambiar sprite del bartender
+        }
+
+        SceneManager.LoadScene("EndGame");
     }
+
 
     private void EndDialog()
     {

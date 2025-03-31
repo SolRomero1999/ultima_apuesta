@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     private bool postRuletaDialogsSeen = false;
+    private bool isPlayerJudge = false; // Nuevo estado para determinar si el jugador eligió ser juez.
 
     // Orden de los minijuegos
     private List<string> minigamesOrder = new List<string>
@@ -68,5 +69,16 @@ public class GameManager : MonoBehaviour
     public void MarkPostRuletaDialogsSeen()
     {
         postRuletaDialogsSeen = true;
+    }
+
+    // Métodos para gestionar el estado del jugador como juez
+    public void SetPlayerAsJudge()
+    {
+        isPlayerJudge = true;
+    }
+
+    public bool IsPlayerJudge()
+    {
+        return isPlayerJudge;
     }
 }
