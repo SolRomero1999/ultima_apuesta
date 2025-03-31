@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 5f;
+    public int playerState = 0;
     private Animator animator;
     private Vector3 targetPosition;
     private bool isMoving = false;

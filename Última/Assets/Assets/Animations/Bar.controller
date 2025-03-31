@@ -36,7 +36,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: AlternativeStat
+    m_ConditionEvent: IsAlternativeState
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -6631573590150444696}
@@ -88,7 +88,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 2
-    m_ConditionEvent: AlternativeStat
+    m_ConditionEvent: IsAlternativeState
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -8117308876592263179}
@@ -113,7 +113,7 @@ AnimatorController:
   m_Name: Bar
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: AlternativeStat
+  - m_Name: IsAlternativeState
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0

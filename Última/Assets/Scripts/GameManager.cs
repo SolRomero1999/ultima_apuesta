@@ -5,7 +5,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     private bool postRuletaDialogsSeen = false;
-    private bool isPlayerJudge = false; // Nuevo estado para determinar si el jugador eligió ser juez.
+    private bool isPlayerJudge = false; // Estado para determinar si el jugador es juez.
+    private int playerState = 0; // Estado actual del jugador (0, 1, 2)
 
     // Orden de los minijuegos
     private List<string> minigamesOrder = new List<string>
@@ -30,16 +31,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Método para obtener el estado del jugador
+    public int GetPlayerState()
+    {
+        return playerState;
+    }
+
+    // Método para establecer el estado del jugador
+    public void SetPlayerState(int state)
+    {
+        playerState = state % 3; // Asegura que el estado se mantenga entre 0 y 2
+        Debug.Log("Estado del jugador actualizado en GameManager: " + playerState);
+    }
+
+    // Método para cambiar el estado del jugador desde otros scripts
+    public void ChangePlayerState()
+    {
+        int newState = (playerState + 1) % 3; // Cicla entre 0, 1 y 2
+        SetPlayerState(newState); // Actualiza el estado en GameManager
+    }
+
+    // Verifica si un minijuego puede ser jugado
     public bool CanPlay(string sceneName)
     {
-        // Si no es un minijuego controlado, permitir jugar
         if (!minigamesOrder.Contains(sceneName)) return true;
 
-        // Si es el primer minijuego y no se ha completado ningún minijuego
         if (sceneName == minigamesOrder[0] && completedMinigames.Count == 0)
             return true;
 
-        // Si no es el primer minijuego, verificar si el anterior está completado
         int index = minigamesOrder.IndexOf(sceneName);
         if (index > 0 && completedMinigames.Contains(minigamesOrder[index - 1]))
             return true;
@@ -47,6 +66,7 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
+    // Marca un minijuego como completado
     public void CompleteMinigame(string sceneName)
     {
         if (!completedMinigames.Contains(sceneName))
@@ -56,27 +76,31 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Verifica si un minijuego ha sido completado
     public bool IsMinigameCompleted(string sceneName)
     {
         return completedMinigames.Contains(sceneName);
     }
 
+    // Verifica si los diálogos posteriores a la ruleta han sido vistos
     public bool HasSeenPostRuletaDialogs()
     {
         return postRuletaDialogsSeen;
     }
 
+    // Marca los diálogos posteriores a la ruleta como vistos
     public void MarkPostRuletaDialogsSeen()
     {
         postRuletaDialogsSeen = true;
     }
 
-    // Métodos para gestionar el estado del jugador como juez
+    // Establece al jugador como juez
     public void SetPlayerAsJudge()
     {
         isPlayerJudge = true;
     }
 
+    // Verifica si el jugador es juez
     public bool IsPlayerJudge()
     {
         return isPlayerJudge;
