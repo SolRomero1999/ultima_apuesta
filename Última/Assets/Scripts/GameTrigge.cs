@@ -5,26 +5,28 @@ using UnityEngine.SceneManagement;
 
 public class GameTrigger : MonoBehaviour
 {
-    [SerializeField] private string sceneToLoad;  // Nombre de la escena a cargar (editable en el Inspector)
-    [SerializeField] private string dialogMessage; // Mensaje personalizado para el diálogo
-    [SerializeField] private GameObject dialogPrefab; // Prefab del diálogo (con Panel, TMP_Text y Buttons)
-    [SerializeField] private bool showOnlyMessage = false; // Mostrar solo un mensaje con un botón "Claro"
-    [SerializeField] private Sprite dialogBackgroundImage; // Imagen de fondo para el diálogo (opcional)
+    [SerializeField] private string sceneToLoad;  
+    [SerializeField] private string dialogMessage; 
+    [SerializeField] private GameObject dialogPrefab; 
+    [SerializeField] private bool showOnlyMessage = false; 
+    [SerializeField] private Sprite dialogBackgroundImage; 
+    [SerializeField] private bool isSpecialMessage = false;  // Nueva variable para manejar el caso especial
 
-    private GameObject dialogInstance; // Instancia del diálogo
-    private PlayerMovement playerMovement; // Referencia al script de movimiento del jugador
+    private GameObject dialogInstance; 
+    private PlayerMovement playerMovement; 
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))  // Verifica si el jugador entra en la zona
+        if (other.CompareTag("Player")) 
         {
-            playerMovement = other.GetComponent<PlayerMovement>(); // Obtén el componente PlayerMovement
+            playerMovement = other.GetComponent<PlayerMovement>(); 
             if (playerMovement != null)
             {
-                playerMovement.StopMovement(); // Detener el movimiento del jugador
-                playerMovement.canMove = false; // Deshabilita el movimiento del jugador
+                playerMovement.StopMovement();
+                playerMovement.canMove = false; 
             }
-            ShowDialog(); // Muestra el diálogo
+
+            ShowDialog();
         }
     }
 
@@ -36,16 +38,10 @@ public class GameTrigger : MonoBehaviour
             return;
         }
 
-        // Instancia el diálogo en la escena
         dialogInstance = Instantiate(dialogPrefab, Vector3.zero, Quaternion.identity);
-
-        // Asegúrate de que el diálogo esté en la capa de la interfaz de usuario (UI)
         dialogInstance.transform.SetParent(GameObject.Find("Canvas").transform, false);
-
-        // Activa el diálogo
         dialogInstance.SetActive(true);
 
-        // Obtén las referencias a los componentes del diálogo
         TMP_Text messageText = dialogInstance.GetComponentInChildren<TMP_Text>();
         if (messageText == null)
         {
@@ -53,93 +49,128 @@ public class GameTrigger : MonoBehaviour
             return;
         }
 
-        // Asigna el mensaje personalizado
-        messageText.text = dialogMessage;
-
-        // Configura la imagen de fondo si está asignada y no es un diálogo de solo mensaje
+        // Configurar imagen de fondo si existe
         Image backgroundImage = dialogInstance.transform.Find("DialogBackground")?.GetComponent<Image>();
-        if (backgroundImage != null)
+        if (backgroundImage != null && dialogBackgroundImage != null)
         {
-            if (!showOnlyMessage && dialogBackgroundImage != null)
-            {
-                backgroundImage.sprite = dialogBackgroundImage; // Asigna la nueva imagen de fondo
-                backgroundImage.gameObject.SetActive(true); // Activa la imagen de fondo
-            }
-            else
-            {
-                backgroundImage.gameObject.SetActive(false); // Desactiva la imagen de fondo si no es necesaria
-            }
+            backgroundImage.sprite = dialogBackgroundImage;
+            backgroundImage.gameObject.SetActive(true);
         }
 
-        if (showOnlyMessage)
+        // Obtener referencias a los botones
+        Button yesButton = dialogInstance.transform.Find("YesButton")?.GetComponent<Button>();
+        Button noButton = dialogInstance.transform.Find("NoButton")?.GetComponent<Button>();
+        Button clearButton = dialogInstance.transform.Find("ClearButton")?.GetComponent<Button>();
+
+        if (showOnlyMessage) 
         {
-            // Configura el diálogo para mostrar solo un botón "Claro"
-            Button clearButton = dialogInstance.transform.Find("ClearButton")?.GetComponent<Button>();
-            if (clearButton == null)
+            // MODO SOLO MENSAJE (para mesas vacías)
+            messageText.text = dialogMessage;
+
+            if (clearButton != null)
             {
-                Debug.LogError("No se encontró el botón 'ClearButton' en el diálogo.");
-                return;
+                clearButton.onClick.AddListener(OnClearClicked);
+                clearButton.gameObject.SetActive(true);
             }
-
-            // Configura el botón "Claro"
-            clearButton.onClick.AddListener(OnClearClicked);
-
-            // Desactiva los botones "Sí" y "No" si existen
-            Button yesButton = dialogInstance.transform.Find("YesButton")?.GetComponent<Button>();
-            Button noButton = dialogInstance.transform.Find("NoButton")?.GetComponent<Button>();
+            
             if (yesButton != null) yesButton.gameObject.SetActive(false);
             if (noButton != null) noButton.gameObject.SetActive(false);
         }
-        else
+        else if (isSpecialMessage) 
         {
-            // Configura los botones "Sí" y "No"
-            Button yesButton = dialogInstance.transform.Find("YesButton")?.GetComponent<Button>();
-            Button noButton = dialogInstance.transform.Find("NoButton")?.GetComponent<Button>();
-
-            if (yesButton == null || noButton == null)
+            // MODO MENSAJE ESPECIAL (para casos especiales, con botones Sí/No)
+            messageText.text = dialogMessage;
+            
+            if (yesButton != null)
             {
-                Debug.LogError("No se encontraron los botones 'YesButton' o 'NoButton' en el diálogo.");
-                return;
+                yesButton.onClick.AddListener(OnYesClicked);
+                yesButton.gameObject.SetActive(true);
+            }
+            
+            if (noButton != null)
+            {
+                noButton.onClick.AddListener(OnNoClicked);
+                noButton.gameObject.SetActive(true);
             }
 
-            // Configura los botones
-            yesButton.onClick.AddListener(OnYesClicked);
-            noButton.onClick.AddListener(OnNoClicked);
-
-            // Desactiva el botón "Claro" si existe
-            Button clearButton = dialogInstance.transform.Find("ClearButton")?.GetComponent<Button>();
             if (clearButton != null) clearButton.gameObject.SetActive(false);
         }
+        else
+        {
+            // MODO JUEGO (para bar, par/impar, etc.)
+            if (CanEnterMinigame())
+            {
+                // Puede jugar - mostrar mensaje normal y botones Sí/No
+                messageText.text = dialogMessage;
+                
+                if (yesButton != null) 
+                {
+                    yesButton.onClick.AddListener(OnYesClicked);
+                    yesButton.gameObject.SetActive(true);
+                }
+                
+                if (noButton != null) 
+                {
+                    noButton.onClick.AddListener(OnNoClicked);
+                    noButton.gameObject.SetActive(true);
+                }
+                
+                if (clearButton != null) clearButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                // No puede jugar aún - mostrar mensaje de "no listo" y solo botón Claro
+                messageText.text = "Aún no estás listo... date una vuelta.";
+                
+                if (clearButton != null)
+                {
+                    clearButton.onClick.AddListener(OnClearClicked);
+                    clearButton.gameObject.SetActive(true);
+                }
+                
+                if (yesButton != null) yesButton.gameObject.SetActive(false);
+                if (noButton != null) noButton.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private bool CanEnterMinigame()
+    {
+        if (GameManager.instance == null) return true;
+        return GameManager.instance.CanPlay(sceneToLoad);
     }
 
     private void OnYesClicked()
     {
-        Debug.Log("Cambiando a la escena: " + sceneToLoad);
         if (playerMovement != null)
         {
-            playerMovement.canMove = true; // Habilita el movimiento del jugador
+            playerMovement.canMove = true; 
         }
-        SceneManager.LoadScene(sceneToLoad); // Carga la escena
-        Destroy(dialogInstance); // Destruye el diálogo
+
+        if (GameManager.instance != null)
+        {
+            GameManager.instance.AdvanceProgress(sceneToLoad);
+        }
+
+        SceneManager.LoadScene(sceneToLoad); 
+        Destroy(dialogInstance); 
     }
 
     private void OnNoClicked()
     {
-        Debug.Log("El jugador decidió no jugar.");
         if (playerMovement != null)
         {
-            playerMovement.canMove = true; // Habilita el movimiento del jugador
+            playerMovement.canMove = true; 
         }
-        Destroy(dialogInstance); // Destruye el diálogo
+        Destroy(dialogInstance); 
     }
 
     private void OnClearClicked()
     {
-        Debug.Log("El jugador entendió el mensaje.");
         if (playerMovement != null)
         {
-            playerMovement.canMove = true; // Habilita el movimiento del jugador
+            playerMovement.canMove = true; 
         }
-        Destroy(dialogInstance); // Destruye el diálogo
+        Destroy(dialogInstance);
     }
 }

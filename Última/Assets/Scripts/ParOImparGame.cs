@@ -41,6 +41,7 @@ public class ParOImparGame : MonoBehaviour
         rulesPanel.SetActive(true);
         backgroundImage.sprite = imgInicial; 
         dealerText.gameObject.SetActive(false);
+        dialoguePanel.SetActive(false);
         playerTeethText.gameObject.SetActive(false);
         parButton.gameObject.SetActive(false);
         imparButton.gameObject.SetActive(false);
@@ -311,6 +312,6 @@ public class ParOImparGame : MonoBehaviour
     {
         blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
-        SceneManager.LoadScene("GameOver");
+        SceneManager.LoadScene("MainScene");
     }
 }
