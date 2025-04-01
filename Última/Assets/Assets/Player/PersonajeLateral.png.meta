@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: e3c4b93be95b8a546825ac4f526112ee
+guid: 7e1a98806321ae9428011fa73908cd51
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PersonajeIzquierda_0
+      name: PersonajeLateral_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 385.83334
-        height: 764
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ca401fc14664da44fab0d0d3a950ef26
-      internalID: -1143174543
+      spriteID: 7401bd0fbcd774d48b250115a2334f3e
+      internalID: -1360081374
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeIzquierda_1
+      name: PersonajeLateral_1
       rect:
         serializedVersion: 2
-        x: 385
-        y: 0
-        width: 385.83334
-        height: 764
+        x: 387
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b3510d5ce1e7964a8afc98c4ac2e18a
-      internalID: 1920141205
+      spriteID: 8bfa575a8163bb54fb352789a1030283
+      internalID: 100590953
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeIzquierda_2
+      name: PersonajeLateral_2
       rect:
         serializedVersion: 2
-        x: 770
-        y: 0
-        width: 385.83334
-        height: 764
+        x: 774
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,20 +166,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 52ff4c12429d38b4ca924734ede1dbd3
-      internalID: -1580145769
+      spriteID: 5bd3d84ac4f93234a918e2d35ba5591c
+      internalID: -1181951022
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeIzquierda_3
+      name: PersonajeLateral_3
       rect:
         serializedVersion: 2
-        x: 1155
-        y: 0
-        width: 385.83334
-        height: 764
+        x: 1161
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -187,20 +187,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0cc647233b61ff84b9bbe67f93424061
-      internalID: -2112118171
+      spriteID: b2ef5fd06284375468b4dd342167c158
+      internalID: -969892411
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeIzquierda_4
+      name: PersonajeLateral_4
       rect:
         serializedVersion: 2
-        x: 1540
-        y: 0
-        width: 385.83334
-        height: 764
+        x: 1548
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -208,20 +208,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 26afd0d127b972d4faafd9752370dc8d
-      internalID: 2028747561
+      spriteID: e8a0e1710d2021c45a8dddee789f420c
+      internalID: -1637891960
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeIzquierda_5
+      name: PersonajeLateral_5
       rect:
         serializedVersion: 2
-        x: 1925
-        y: 0
-        width: 385.83334
-        height: 764
+        x: 1935
+        y: 771.5
+        width: 387.33334
+        height: 771.5
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,8 +229,134 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4047be36851d17544921e63c25312830
-      internalID: 1487476890
+      spriteID: 0c7cb5e1eb24fc7438e8856ebb5b6010
+      internalID: -1346714726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a076d1868b2e0e48a03e2a3df2c147d
+      internalID: -1400255058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_7
+      rect:
+        serializedVersion: 2
+        x: 387
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48a3c812e284c9540ae77709ebc43eb7
+      internalID: -249244044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_8
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 991a72fa853b5e2479eb4a2a7ee7c076
+      internalID: -445062287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_9
+      rect:
+        serializedVersion: 2
+        x: 1161
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 587df07c80db327489f50c056ee90158
+      internalID: -1451646801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_10
+      rect:
+        serializedVersion: 2
+        x: 1548
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7da0521c32d517146a3f5d69a2ce5fc8
+      internalID: -226894948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeLateral_11
+      rect:
+        serializedVersion: 2
+        x: 1935
+        y: 0.5
+        width: 387.33334
+        height: 771.5
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cab2c6076b5aa774082d3e421f0f8fde
+      internalID: 829548779
       vertices: []
       indices: 
       edges: []
@@ -246,12 +372,18 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PersonajeIzquierda_0: -1143174543
-      PersonajeIzquierda_1: 1920141205
-      PersonajeIzquierda_2: -1580145769
-      PersonajeIzquierda_3: -2112118171
-      PersonajeIzquierda_4: 2028747561
-      PersonajeIzquierda_5: 1487476890
+      PersonajeLateral_0: -1360081374
+      PersonajeLateral_1: 100590953
+      PersonajeLateral_10: -226894948
+      PersonajeLateral_11: 829548779
+      PersonajeLateral_2: -1181951022
+      PersonajeLateral_3: -969892411
+      PersonajeLateral_4: -1637891960
+      PersonajeLateral_5: -1346714726
+      PersonajeLateral_6: -1400255058
+      PersonajeLateral_7: -249244044
+      PersonajeLateral_8: -445062287
+      PersonajeLateral_9: -1451646801
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

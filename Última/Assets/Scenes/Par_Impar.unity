@@ -1271,9 +1271,9 @@ MonoBehaviour:
   blackScreen: {fileID: 1643204154}
   dialoguePanel: {fileID: 1588799482}
   imgInicial: {fileID: 21300000, guid: 0ac5018bead0b7c478cc0a9a9a0bb518, type: 3}
-  imgDealerPensando: {fileID: 21300000, guid: ce8d59e91ff9f754bb71b0761e269a24, type: 3}
+  imgDealerPensando: {fileID: 21300000, guid: 4f536dfc98221004ab4434c91d8eef1b, type: 3}
   imgDealerApostando: {fileID: 21300000, guid: 572bd9f76b4296f4da9dd7137abd3480, type: 3}
-  imgPlayerApostando: {fileID: 21300000, guid: 9842a41a1453f7a43961a7b0e1a1f251, type: 3}
+  imgPlayerApostando: {fileID: 21300000, guid: 2f38f7ed98b07b1469977b6e14369256, type: 3}
   audioSource: {fileID: 834284384}
   RisaClip: {fileID: 8300000, guid: 497caab99b941cf459519616630fec4d, type: 3}
   QuejidoClip: {fileID: 8300000, guid: 65505f401b20568438076a4261f351c9, type: 3}
