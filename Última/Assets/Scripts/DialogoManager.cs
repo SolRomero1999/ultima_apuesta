@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+
 public class DialogManager : MonoBehaviour
 {
     [SerializeField] private GameObject playerDialogPrefab;
@@ -90,99 +91,44 @@ public class DialogManager : MonoBehaviour
     private void InitializeNewPlayerDialog()
     {
         int playerState = GameManager.instance != null ? GameManager.instance.GetPlayerState() : 0;
-        bool isOriginalBartender = GameManager.instance != null && !GameManager.instance.IsPlayerJudge();
+        int judgeLevel = GameManager.instance != null ? GameManager.instance.GetCurrentJudgeLevel() : 0;
+        
+        GameObject bartenderPrefab = judgeLevel == 0 ? bartenderDialogPrefab : SecondBartenderDialogPrefab;
 
-        // Primera línea del jugador (siempre la misma)
         List<DialogLine> lines = new List<DialogLine>
         {
-            new DialogLine { text = "¿Dónde estoy?", dialogPrefab = SecondPlayerDialogPrefab }
+            new DialogLine { text = "¿Dónde estoy?", dialogPrefab = SecondPlayerDialogPrefab },
+            new DialogLine { 
+                text = judgeLevel == 0 ? 
+                    "Se podría decir que en el limbo, haz muerto" : 
+                    "Oh, al fin llegó alguien... estás en el limbo", 
+                dialogPrefab = bartenderPrefab 
+            },
+            new DialogLine { text = "¿El limbo? ¿Cómo llegué aquí?", dialogPrefab = SecondPlayerDialogPrefab },
+            new DialogLine { 
+                text = judgeLevel == 0 ? 
+                    "Eso es obvio, haz muerto" : 
+                    "Bueno, lamentablemente haz muerto", 
+                dialogPrefab = bartenderPrefab 
+            },
+            new DialogLine { text = "¿Muerto? No lo recuerdo...", dialogPrefab = SecondPlayerDialogPrefab },
+            new DialogLine { 
+                text = judgeLevel == 0 ? 
+                    "Quizás lo hagas una vez que demuestres tu valor... supera los juegos aquí establecidos" : 
+                    "Es normal, yo tampoco lo hice. Lo recordarás a medida que vayas jugando. Si terminas los juegos recordarás y podrás irte", 
+                dialogPrefab = bartenderPrefab 
+            },
+            new DialogLine { text = "¿Debo jugar?", dialogPrefab = SecondPlayerDialogPrefab },
+            new DialogLine { 
+                text = judgeLevel == 0 ? 
+                    "Sí, mejor comienza ya" : 
+                    "Sí, buena suerte", 
+                dialogPrefab = bartenderPrefab 
+            }
         };
-
-        // Respuesta del bartender (depende del tipo)
-        if (isOriginalBartender)
-        {
-            lines.Add(new DialogLine { 
-                text = "Se podría decir que en el limbo, haz muerto", 
-                dialogPrefab = bartenderDialogPrefab 
-            });
-        }
-        else
-        {
-            lines.Add(new DialogLine { 
-                text = "Oh, al fin llegó alguien... estás en el limbo", 
-                dialogPrefab = SecondBartenderDialogPrefab 
-            });
-        }
-
-        // Segunda línea del jugador
-        lines.Add(new DialogLine { 
-            text = "¿El limbo? ¿Cómo llegué aquí?", 
-            dialogPrefab = SecondPlayerDialogPrefab 
-        });
-
-        // Respuesta del bartender sobre la muerte
-        if (isOriginalBartender)
-        {
-            lines.Add(new DialogLine { 
-                text = "Eso es obvio, haz muerto", 
-                dialogPrefab = bartenderDialogPrefab 
-            });
-        }
-        else
-        {
-            lines.Add(new DialogLine { 
-                text = "Bueno, lamentablemente haz muerto", 
-                dialogPrefab = SecondBartenderDialogPrefab 
-            });
-        }
-
-        // Tercera línea del jugador
-        lines.Add(new DialogLine { 
-            text = "¿Muerto? No lo recuerdo...", 
-            dialogPrefab = SecondPlayerDialogPrefab 
-        });
-
-        // Respuesta del bartender sobre el recuerdo
-        if (isOriginalBartender)
-        {
-            lines.Add(new DialogLine { 
-                text = "Quizás lo hagas una vez que demuestres tu valor... supera los juegos aquí establecidos", 
-                dialogPrefab = bartenderDialogPrefab 
-            });
-        }
-        else
-        {
-            lines.Add(new DialogLine { 
-                text = "Es normal, yo tampoco lo hice. Lo recordarás a medida que vayas jugando. Si terminas los juegos recordarás y podrás irte", 
-                dialogPrefab = SecondBartenderDialogPrefab 
-            });
-        }
-
-        // Cuarta línea del jugador
-        lines.Add(new DialogLine { 
-            text = "¿Debo jugar?", 
-            dialogPrefab = SecondPlayerDialogPrefab 
-        });
-
-        // Respuesta final del bartender
-        if (isOriginalBartender)
-        {
-            lines.Add(new DialogLine { 
-                text = "Sí, mejor comienza ya", 
-                dialogPrefab = bartenderDialogPrefab 
-            });
-        }
-        else
-        {
-            lines.Add(new DialogLine { 
-                text = "Sí, buena suerte", 
-                dialogPrefab = SecondBartenderDialogPrefab 
-            });
-        }
 
         dialogLines = lines.ToArray();
     }
-
 
     private void ShowNextDialog()
     {
@@ -201,7 +147,6 @@ public class DialogManager : MonoBehaviour
             Destroy(currentDialogInstance);
         }
 
-        // Crear la nueva instancia del diálogo
         currentDialogInstance = Instantiate(dialogLines[currentLineIndex].dialogPrefab, Vector3.zero, Quaternion.identity);
         currentDialogInstance.transform.SetParent(GameObject.Find("Canvas").transform, false);
         currentDialogInstance.SetActive(true);
@@ -266,6 +211,8 @@ public class DialogManager : MonoBehaviour
     {
         if (GameManager.instance != null)
         {
+            int playerState = GameManager.instance.GetPlayerState();
+            GameManager.instance.SetNewJudge(playerState);
             GameManager.instance.SetPlayerAsJudge();
         }
 

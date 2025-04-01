@@ -5,17 +5,16 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     private bool postRuletaDialogsSeen = false;
-    private bool isPlayerJudge = false; // Estado para determinar si el jugador es juez.
-    private int playerState = 0; // Estado actual del jugador (0, 1, 2)
+    private bool isPlayerJudge = false;
+    private int playerState = 0;
+    private int currentJudgeLevel = 0; // 0 = bartender original, 1 = primer jugador, etc.
 
-    // Orden de los minijuegos
     private List<string> minigamesOrder = new List<string>
     {
         "Par_Impar",
         "Ruleta_Rusa"
     };
 
-    // Lista de minijuegos completados
     private List<string> completedMinigames = new List<string>();
 
     private void Awake()
@@ -24,6 +23,7 @@ public class GameManager : MonoBehaviour
         {
             instance = this;
             DontDestroyOnLoad(gameObject);
+            LoadJudgeLevel();
         }
         else
         {
@@ -31,27 +31,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Método para obtener el estado del jugador
+    private void LoadJudgeLevel()
+    {
+        currentJudgeLevel = PlayerPrefs.GetInt("CurrentJudgeLevel", 0);
+    }
+
     public int GetPlayerState()
     {
         return playerState;
     }
 
-    // Método para establecer el estado del jugador
     public void SetPlayerState(int state)
     {
-        playerState = state % 3; // Asegura que el estado se mantenga entre 0 y 2
+        playerState = state % 3;
         Debug.Log("Estado del jugador actualizado en GameManager: " + playerState);
     }
 
-    // Método para cambiar el estado del jugador desde otros scripts
     public void ChangePlayerState()
     {
-        int newState = (playerState + 1) % 3; // Cicla entre 0, 1 y 2
-        SetPlayerState(newState); // Actualiza el estado en GameManager
+        int newState = (playerState + 1) % 3;
+        SetPlayerState(newState);
     }
 
-    // Verifica si un minijuego puede ser jugado
     public bool CanPlay(string sceneName)
     {
         if (!minigamesOrder.Contains(sceneName)) return true;
@@ -66,7 +67,6 @@ public class GameManager : MonoBehaviour
         return false;
     }
 
-    // Marca un minijuego como completado
     public void CompleteMinigame(string sceneName)
     {
         if (!completedMinigames.Contains(sceneName))
@@ -76,33 +76,40 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Verifica si un minijuego ha sido completado
     public bool IsMinigameCompleted(string sceneName)
     {
         return completedMinigames.Contains(sceneName);
     }
 
-    // Verifica si los diálogos posteriores a la ruleta han sido vistos
     public bool HasSeenPostRuletaDialogs()
     {
         return postRuletaDialogsSeen;
     }
 
-    // Marca los diálogos posteriores a la ruleta como vistos
     public void MarkPostRuletaDialogsSeen()
     {
         postRuletaDialogsSeen = true;
     }
 
-    // Establece al jugador como juez
     public void SetPlayerAsJudge()
     {
         isPlayerJudge = true;
     }
 
-    // Verifica si el jugador es juez
     public bool IsPlayerJudge()
     {
         return isPlayerJudge;
+    }
+
+    public int GetCurrentJudgeLevel()
+    {
+        return currentJudgeLevel;
+    }
+
+    public void SetNewJudge(int playerState)
+    {
+        currentJudgeLevel = playerState + 1;
+        PlayerPrefs.SetInt("CurrentJudgeLevel", currentJudgeLevel);
+        Debug.Log("Nuevo juez establecido. Nivel: " + currentJudgeLevel);
     }
 }
