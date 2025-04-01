@@ -141,6 +141,7 @@ public class RuletaRusa : MonoBehaviour
                 }
                 else
                 {
+                    backgroundImage.sprite = imgJugadorSuicida; 
                     audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "No es tu día...";
                     yield return StartCoroutine(PlayerDeath()); 
@@ -150,9 +151,9 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
+                    backgroundImage.sprite = imgJugadorSuicida; 
                     audioSource.PlayOneShot(disparoClip);
                     dealerText.text = "No eres muy listo...";
-                    backgroundImage.sprite = imgJugadorSuicida; 
                     yield return new WaitForSeconds(2f); 
                     yield return StartCoroutine(PlayerDeath()); 
                 }
@@ -197,9 +198,9 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
+                    backgroundImage.sprite = imgJugadorSuicida; 
                     audioSource.PlayOneShot(disparoFallidoClip);
                     dealerText.text = "Vas con suerte...";
-                    backgroundImage.sprite = imgJugadorSuicida; 
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);

@@ -14,12 +14,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        int playerState = GameManager.instance.GetPlayerState(); // Siempre leer del GameManager
+        int playerState = GameManager.instance.GetPlayerState(); 
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveY = Input.GetAxisRaw("Vertical");
         isMoving = moveX != 0 || moveY != 0;
-
-        animator.SetBool("isMoving", isMoving);
 
         if (isMoving)
         {
@@ -38,7 +36,7 @@ public class PlayerController : MonoBehaviour
     public void SetNextState()
     {
         int newState = (GameManager.instance.GetPlayerState() + 1) % 3;
-        GameManager.instance.SetPlayerState(newState); // Cambiar el estado en GameManager
+        GameManager.instance.SetPlayerState(newState); 
         animator.SetInteger("PlayerState", newState);
         Debug.Log("Nuevo playerState: " + newState);
     }
