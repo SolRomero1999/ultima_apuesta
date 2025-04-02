@@ -3693,7 +3693,6 @@ GameObject:
   - component: {fileID: 830584570}
   - component: {fileID: 830584567}
   - component: {fileID: 830584571}
-  - component: {fileID: 830584572}
   - component: {fileID: 830584573}
   m_Layer: 0
   m_Name: Player
@@ -3862,18 +3861,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.42277235, y: 0.62261415}
   m_EdgeRadius: 0
---- !u!114 &830584572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 830584565}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c9e967a5929db7f45a05a2abdad7991c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &830584573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6844,10 +6831,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e1a424f2c3d7447833add7b00a5385, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderer: {fileID: 1704280327}
   animator: {fileID: 1704280331}
-  initialSprite: {fileID: 21300000, guid: 7542c3a1c082fa447a1d6a5d2924f405, type: 3}
-  alternateSprite: {fileID: 21300000, guid: 5debc726194aef3478f4913b533158e4, type: 3}
 --- !u!95 &1704280331
 Animator:
   serializedVersion: 5
