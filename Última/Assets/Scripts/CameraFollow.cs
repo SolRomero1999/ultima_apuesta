@@ -2,16 +2,23 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    public Transform player; // Referencia al jugador
-    public float smoothSpeed = 5f; // Velocidad de suavizado
-    private Vector3 offset; // Desplazamiento fijo de la cámara
+    public Transform player;
+    public float smoothSpeed = 5f;
+    private Vector3 offset;
 
-    void Start()
+    private void Start()
     {
-        offset = transform.position - player.position; // Guarda la distancia inicial
+        if (player != null)
+        {
+            offset = transform.position - player.position;
+        }
+        else
+        {
+            Debug.LogWarning("Player reference is missing in CameraFollow");
+        }
     }
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         if (player != null)
         {

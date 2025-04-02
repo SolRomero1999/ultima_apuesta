@@ -3,113 +3,120 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager instance;
-    private bool postRuletaDialogsSeen = false;
-    private bool isPlayerJudge = false;
-    private int playerState = 0;
-    private int currentJudgeLevel = 0; // 0 = bartender original, 1 = primer jugador, etc.
-
-    private List<string> minigamesOrder = new List<string>
-    {
-        "Par_Impar",
-        "Ruleta_Rusa"
-    };
-
-    private List<string> completedMinigames = new List<string>();
+    #region Singleton Pattern
+    public static GameManager Instance { get; private set; }
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
-            LoadJudgeLevel();
+            InitializeGameData();
         }
         else
         {
             Destroy(gameObject);
         }
     }
+    #endregion
+
+    #region Game State Variables
+    private bool _postRuletaDialogsSeen = false;
+    private bool _isPlayerJudge = false;
+    private int _playerState = 0;
+    private int _currentJudgeLevel = 0; 
+    #endregion
+
+    #region Minigames Management
+    private readonly List<string> _minigamesOrder = new List<string>
+    {
+        "Par_Impar",
+        "Ruleta_Rusa"
+    };
+
+    private readonly List<string> _completedMinigames = new List<string>();
+    #endregion
+
+    #region Initialization
+    private void InitializeGameData()
+    {
+        LoadJudgeLevel();
+    }
 
     private void LoadJudgeLevel()
     {
-        currentJudgeLevel = PlayerPrefs.GetInt("CurrentJudgeLevel", 0);
+        _currentJudgeLevel = PlayerPrefs.GetInt("CurrentJudgeLevel", 0);
     }
+    #endregion
 
-    public int GetPlayerState()
-    {
-        return playerState;
-    }
+    #region Player State Management
+    public int GetPlayerState() => _playerState;
 
     public void SetPlayerState(int state)
     {
-        playerState = state % 3;
-        Debug.Log("Estado del jugador actualizado en GameManager: " + playerState);
+        _playerState = state % 3;
+        Debug.Log($"Estado del jugador actualizado: {_playerState}");
     }
 
     public void ChangePlayerState()
     {
-        int newState = (playerState + 1) % 3;
-        SetPlayerState(newState);
+        SetPlayerState((_playerState + 1) % 3);
     }
+    #endregion
 
+    #region Minigame Progress
     public bool CanPlay(string sceneName)
     {
-        if (!minigamesOrder.Contains(sceneName)) return true;
+        if (!_minigamesOrder.Contains(sceneName)) return true;
 
-        if (sceneName == minigamesOrder[0] && completedMinigames.Count == 0)
+        if (sceneName == _minigamesOrder[0] && _completedMinigames.Count == 0)
             return true;
 
-        int index = minigamesOrder.IndexOf(sceneName);
-        if (index > 0 && completedMinigames.Contains(minigamesOrder[index - 1]))
-            return true;
-
-        return false;
+        int index = _minigamesOrder.IndexOf(sceneName);
+        return index > 0 && _completedMinigames.Contains(_minigamesOrder[index - 1]);
     }
 
     public void CompleteMinigame(string sceneName)
     {
-        if (!completedMinigames.Contains(sceneName))
+        if (!_completedMinigames.Contains(sceneName))
         {
-            completedMinigames.Add(sceneName);
-            Debug.Log("Minijuego completado: " + sceneName);
+            _completedMinigames.Add(sceneName);
+            Debug.Log($"Minijuego completado: {sceneName}");
         }
     }
 
-    public bool IsMinigameCompleted(string sceneName)
-    {
-        return completedMinigames.Contains(sceneName);
-    }
+    public bool IsMinigameCompleted(string sceneName) => _completedMinigames.Contains(sceneName);
+    #endregion
 
-    public bool HasSeenPostRuletaDialogs()
-    {
-        return postRuletaDialogsSeen;
-    }
+    #region Dialog System
+    public bool HasSeenPostRuletaDialogs() => _postRuletaDialogsSeen;
 
-    public void MarkPostRuletaDialogsSeen()
-    {
-        postRuletaDialogsSeen = true;
-    }
+    public void MarkPostRuletaDialogsSeen() => _postRuletaDialogsSeen = true;
+    #endregion
 
-    public void SetPlayerAsJudge()
-    {
-        isPlayerJudge = true;
-    }
+    #region Judge System
+    public bool IsPlayerJudge() => _isPlayerJudge;
 
-    public bool IsPlayerJudge()
-    {
-        return isPlayerJudge;
-    }
+    public void SetPlayerAsJudge() => _isPlayerJudge = true;
 
-    public int GetCurrentJudgeLevel()
-    {
-        return currentJudgeLevel;
-    }
+    public int GetCurrentJudgeLevel() => _currentJudgeLevel;
 
     public void SetNewJudge(int playerState)
     {
-        currentJudgeLevel = playerState + 1;
-        PlayerPrefs.SetInt("CurrentJudgeLevel", currentJudgeLevel);
-        Debug.Log("Nuevo juez establecido. Nivel: " + currentJudgeLevel);
+        _currentJudgeLevel = playerState + 1;
+        PlayerPrefs.SetInt("CurrentJudgeLevel", _currentJudgeLevel);
+        Debug.Log($"Nuevo juez establecido. Nivel: {_currentJudgeLevel}");
     }
+    #endregion
+
+    #region Cleanup
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+    #endregion
 }

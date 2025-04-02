@@ -98,7 +98,7 @@ public class GameTrigger : MonoBehaviour
         else
         {
             // MODO JUEGO
-            if (GameManager.instance != null && GameManager.instance.IsMinigameCompleted(sceneToLoad))
+            if (GameManager.Instance != null && GameManager.Instance.IsMinigameCompleted(sceneToLoad))
             {
                 // Caso: Minijuego ya completado
                 messageText.text = "¡Ya completaste este desafío! Ve al siguiente juego.";
@@ -150,10 +150,10 @@ public class GameTrigger : MonoBehaviour
 
     private bool CanEnterMinigame()
     {
-        if (GameManager.instance == null) return true;
+        if (GameManager.Instance == null) return true;
         
         // Verificar si puede jugar este minijuego según el orden de progreso
-        return GameManager.instance.CanPlay(sceneToLoad);
+        return GameManager.Instance.CanPlay(sceneToLoad);
     }
 
     private void OnYesClicked()

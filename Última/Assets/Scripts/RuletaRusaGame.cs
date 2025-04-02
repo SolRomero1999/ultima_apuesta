@@ -300,9 +300,9 @@ public class RuletaRusa : MonoBehaviour
 
     IEnumerator EndGame()
     {
-        if (!isQuitting && GameManager.instance != null)
+        if (!isQuitting && GameManager.Instance != null)
         {
-            GameManager.instance.CompleteMinigame("Ruleta_Rusa");
+            GameManager.Instance.CompleteMinigame("Ruleta_Rusa");
         }
         
         yield return new WaitForSeconds(2f);

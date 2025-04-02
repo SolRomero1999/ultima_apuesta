@@ -6,16 +6,19 @@ using System.Collections.Generic;
 
 public class DialogManager : MonoBehaviour
 {
+    [Header("Dialog Prefabs")]
     [SerializeField] private GameObject playerDialogPrefab;
-    [SerializeField] private GameObject SecondPlayerDialogPrefab;
+    [SerializeField] private GameObject secondPlayerDialogPrefab;
     [SerializeField] private GameObject bartenderDialogPrefab;
-    [SerializeField] private GameObject SecondBartenderDialogPrefab;
+    [SerializeField] private GameObject secondBartenderDialogPrefab;
     [SerializeField] private GameObject choiceDialogPrefab;
 
     private GameObject currentDialogInstance;
-    private Button clearButton;
+    private Button currentButton;
     private int currentLineIndex = 0;
     private bool isPostRuleta = false;
+    private DialogLine[] currentDialogLines;
+    private PlayerMovement cachedPlayerMovement;
 
     private struct DialogLine
     {
@@ -23,165 +26,219 @@ public class DialogManager : MonoBehaviour
         public GameObject dialogPrefab;
     }
 
-    private DialogLine[] dialogLines;
-
     private void Start()
     {
-        int playerState = GameManager.instance != null ? GameManager.instance.GetPlayerState() : 0;
+        cachedPlayerMovement = FindObjectOfType<PlayerMovement>();
+        InitializeDialogSystem();
+    }
 
-        if (playerState > 0)
+    private void OnDestroy()
+    {
+        if (currentButton != null)
+        {
+            currentButton.onClick.RemoveAllListeners();
+        }
+    }
+
+    private void InitializeDialogSystem()
+    {
+        if (GameManager.Instance == null)
+        {
+            EnablePlayerMovement();
+            return;
+        }
+
+        bool shouldStartDialog = false;
+
+        if (GameManager.Instance.GetPlayerState() > 0)
         {
             InitializeNewPlayerDialog();
+            shouldStartDialog = true;
         }
         else if (PlayerPrefs.GetString("PreviousScene") == "MainMenu")
         {
             InitializeIntroDialog();
+            shouldStartDialog = true;
         }
-        else if (GameManager.instance != null && GameManager.instance.IsMinigameCompleted("Ruleta_Rusa") &&
-                 !GameManager.instance.HasSeenPostRuletaDialogs())
+        else if (GameManager.Instance.IsMinigameCompleted("Ruleta_Rusa") && 
+                !GameManager.Instance.HasSeenPostRuletaDialogs())
         {
             InitializePostRuletaDialog();
+            shouldStartDialog = true;
         }
 
-        if (dialogLines != null && dialogLines.Length > 0)
+        if (shouldStartDialog)
         {
-            PlayerMovement player = FindObjectOfType<PlayerMovement>();
-            if (player != null)
-            {
-                player.canMove = false;
-            }
-
+            DisablePlayerMovement();
             ShowNextDialog();
+        }
+        else
+        {
+            EnablePlayerMovement();
         }
     }
 
+    #region Dialog Initialization
+
     private void InitializeIntroDialog()
     {
-        dialogLines = new DialogLine[]
+        currentDialogLines = new DialogLine[]
         {
-            new DialogLine { text = "¿Dónde estoy...? Todo esto se siente extraño...", dialogPrefab = playerDialogPrefab },
-            new DialogLine { text = "Recuerdo haber muerto... pero no sé cómo sucedió...", dialogPrefab = playerDialogPrefab },
-            new DialogLine { text = "¿Qué está pasando aquí?", dialogPrefab = playerDialogPrefab },
-            new DialogLine { text = "Efectivamente, has muerto.", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Y ahora estás aquí, en este lugar entre la vida y la muerte.", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Para poder seguir adelante, tendrás que demostrar tu valía en una serie de juegos.", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Cada juego es una prueba. Si las superas, quizás encuentres respuestas.", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Si fallas... bueno, mejor ni hablemos de eso.", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "¿Listo para empezar?", dialogPrefab = bartenderDialogPrefab }
+            CreateDialogLine("¿Dónde estoy...? Todo esto se siente extraño...", playerDialogPrefab),
+            CreateDialogLine("Recuerdo haber muerto... pero no sé cómo sucedió...", playerDialogPrefab),
+            CreateDialogLine("¿Qué está pasando aquí?", playerDialogPrefab),
+            CreateDialogLine("Efectivamente, has muerto.", bartenderDialogPrefab),
+            CreateDialogLine("Y ahora estás aquí, en este lugar entre la vida y la muerte.", bartenderDialogPrefab),
+            CreateDialogLine("Para poder seguir adelante, tendrás que demostrar tu valía en una serie de juegos.", bartenderDialogPrefab),
+            CreateDialogLine("Cada juego es una prueba. Si las superas, quizás encuentres respuestas.", bartenderDialogPrefab),
+            CreateDialogLine("Si fallas... bueno, mejor ni hablemos de eso.", bartenderDialogPrefab),
+            CreateDialogLine("¿Listo para empezar?", bartenderDialogPrefab)
         };
     }
 
     private void InitializePostRuletaDialog()
     {
         isPostRuleta = true;
-        dialogLines = new DialogLine[]
+        currentDialogLines = new DialogLine[]
         {
-            new DialogLine { text = "¿Creías que había muerto?", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "En este lugar se podría decir que soy como un juez, una bala no me matará", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Aún así me has ganado", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "¿Qué harás ahora?", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "¿Qué haré? ¿Qué opciones tengo?", dialogPrefab = playerDialogPrefab },
-            new DialogLine { text = "Bueno, puedes reencarnar, olvidarás todo esto y podrás llevar una nueva vida", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "O puedes liberarme y tomar mi lugar", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "Ser el nuevo juez", dialogPrefab = bartenderDialogPrefab },
-            new DialogLine { text = "¿Qué prefieres?", dialogPrefab = bartenderDialogPrefab }
+            CreateDialogLine("¿Creías que había muerto?", bartenderDialogPrefab),
+            CreateDialogLine("En este lugar se podría decir que soy como un juez, una bala no me matará", bartenderDialogPrefab),
+            CreateDialogLine("Aún así me has ganado", bartenderDialogPrefab),
+            CreateDialogLine("¿Qué harás ahora?", bartenderDialogPrefab),
+            CreateDialogLine("¿Qué haré? ¿Qué opciones tengo?", playerDialogPrefab),
+            CreateDialogLine("Bueno, puedes reencarnar, olvidarás todo esto y podrás llevar una nueva vida", bartenderDialogPrefab),
+            CreateDialogLine("O puedes liberarme y tomar mi lugar", bartenderDialogPrefab),
+            CreateDialogLine("Ser el nuevo juez", bartenderDialogPrefab),
+            CreateDialogLine("¿Qué prefieres?", bartenderDialogPrefab)
         };
     }
-        
+
     private void InitializeNewPlayerDialog()
     {
-        int playerState = GameManager.instance != null ? GameManager.instance.GetPlayerState() : 0;
-        int judgeLevel = GameManager.instance != null ? GameManager.instance.GetCurrentJudgeLevel() : 0;
-        
-        GameObject bartenderPrefab = judgeLevel == 0 ? bartenderDialogPrefab : SecondBartenderDialogPrefab;
+        int playerState = GameManager.Instance.GetPlayerState();
+        int judgeLevel = GameManager.Instance.GetCurrentJudgeLevel();
+        GameObject bartenderPrefab = judgeLevel == 0 ? bartenderDialogPrefab : secondBartenderDialogPrefab;
 
         List<DialogLine> lines = new List<DialogLine>
         {
-            new DialogLine { text = "¿Dónde estoy?", dialogPrefab = SecondPlayerDialogPrefab },
-            new DialogLine { 
-                text = judgeLevel == 0 ? 
-                    "Se podría decir que en el limbo, haz muerto" : 
-                    "Oh, al fin llegó alguien... estás en el limbo", 
-                dialogPrefab = bartenderPrefab 
-            },
-            new DialogLine { text = "¿El limbo? ¿Cómo llegué aquí?", dialogPrefab = SecondPlayerDialogPrefab },
-            new DialogLine { 
-                text = judgeLevel == 0 ? 
-                    "Eso es obvio, haz muerto" : 
-                    "Bueno, lamentablemente haz muerto", 
-                dialogPrefab = bartenderPrefab 
-            },
-            new DialogLine { text = "¿Muerto? No lo recuerdo...", dialogPrefab = SecondPlayerDialogPrefab },
-            new DialogLine { 
-                text = judgeLevel == 0 ? 
-                    "Quizás lo hagas una vez que demuestres tu valor... supera los juegos aquí establecidos" : 
-                    "Es normal, yo tampoco lo hice. Lo recordarás a medida que vayas jugando. Si terminas los juegos recordarás y podrás irte", 
-                dialogPrefab = bartenderPrefab 
-            },
-            new DialogLine { text = "¿Debo jugar?", dialogPrefab = SecondPlayerDialogPrefab },
-            new DialogLine { 
-                text = judgeLevel == 0 ? 
-                    "Sí, mejor comienza ya" : 
-                    "Sí, buena suerte", 
-                dialogPrefab = bartenderPrefab 
-            }
+            CreateDialogLine("¿Dónde estoy?", secondPlayerDialogPrefab),
+            CreateDialogLine(judgeLevel == 0 ? 
+                "Se podría decir que en el limbo, haz muerto" : 
+                "Oh, al fin llegó alguien... estás en el limbo", bartenderPrefab),
+            CreateDialogLine("¿El limbo? ¿Cómo llegué aquí?", secondPlayerDialogPrefab),
+            CreateDialogLine(judgeLevel == 0 ? 
+                "Eso es obvio, haz muerto" : 
+                "Bueno, lamentablemente haz muerto", bartenderPrefab),
+            CreateDialogLine("¿Muerto? No lo recuerdo...", secondPlayerDialogPrefab),
+            CreateDialogLine(judgeLevel == 0 ? 
+                "Quizás lo hagas una vez que demuestres tu valor... supera los juegos aquí establecidos" : 
+                "Es normal, yo tampoco lo hice. Lo recordarás a medida que vayas jugando. Si terminas los juegos recordarás y podrás irte", bartenderPrefab),
+            CreateDialogLine("¿Debo jugar?", secondPlayerDialogPrefab),
+            CreateDialogLine(judgeLevel == 0 ? 
+                "Sí, mejor comienza ya" : 
+                "Sí, buena suerte", bartenderPrefab)
         };
 
-        dialogLines = lines.ToArray();
+        currentDialogLines = lines.ToArray();
     }
+
+    private DialogLine CreateDialogLine(string text, GameObject prefab)
+    {
+        return new DialogLine { text = text, dialogPrefab = prefab };
+    }
+
+    #endregion
+
+    #region Dialog Flow Control
 
     private void ShowNextDialog()
     {
-        if (currentLineIndex >= dialogLines.Length)
+        if (currentLineIndex >= currentDialogLines.Length)
         {
-            if (isPostRuleta)
-                ShowFinalChoice();
-            else
-                EndDialog();
-
+            HandleDialogEnd();
             return;
         }
 
+        CleanupCurrentDialog();
+
+        CreateDialogInstance(currentDialogLines[currentLineIndex]);
+        currentLineIndex++;
+    }
+
+    private void CleanupCurrentDialog()
+    {
         if (currentDialogInstance != null)
         {
             Destroy(currentDialogInstance);
+            currentDialogInstance = null;
         }
 
-        currentDialogInstance = Instantiate(dialogLines[currentLineIndex].dialogPrefab, Vector3.zero, Quaternion.identity);
-        currentDialogInstance.transform.SetParent(GameObject.Find("Canvas").transform, false);
-        currentDialogInstance.SetActive(true);
-
-        TMP_Text messageText = currentDialogInstance.GetComponentInChildren<TMP_Text>();
-        if (messageText != null)
+        if (currentButton != null)
         {
-            messageText.text = dialogLines[currentLineIndex].text;
-        }
-
-        clearButton = currentDialogInstance.GetComponentInChildren<Button>();
-        if (clearButton != null)
-        {
-            clearButton.onClick.RemoveAllListeners();
-            clearButton.onClick.AddListener(() =>
-            {
-                currentLineIndex++;
-                ShowNextDialog();
-            });
+            currentButton.onClick.RemoveAllListeners();
+            currentButton = null;
         }
     }
 
-    private void ShowFinalChoice()
+    private void CreateDialogInstance(DialogLine dialogLine)
     {
-        Destroy(currentDialogInstance);
-
-        currentDialogInstance = Instantiate(choiceDialogPrefab, Vector3.zero, Quaternion.identity);
-        currentDialogInstance.transform.SetParent(GameObject.Find("Canvas").transform, false);
+        currentDialogInstance = Instantiate(dialogLine.dialogPrefab, Vector3.zero, Quaternion.identity);
+        currentDialogInstance.transform.SetParent(GetCanvasTransform(), false);
         currentDialogInstance.SetActive(true);
 
-        TMP_Text messageText = currentDialogInstance.GetComponentInChildren<TMP_Text>();
+        SetDialogText(currentDialogInstance, dialogLine.text);
+        SetupDialogButton(currentDialogInstance);
+    }
+
+    private Transform GetCanvasTransform()
+    {
+        GameObject canvas = GameObject.Find("Canvas");
+        return canvas != null ? canvas.transform : null;
+    }
+
+    private void SetDialogText(GameObject dialogInstance, string text)
+    {
+        TMP_Text messageText = dialogInstance.GetComponentInChildren<TMP_Text>();
         if (messageText != null)
         {
-            messageText.text = "¿Qué prefieres?";
+            messageText.text = text;
         }
+    }
+
+    private void SetupDialogButton(GameObject dialogInstance)
+    {
+        currentButton = dialogInstance.GetComponentInChildren<Button>();
+        if (currentButton != null)
+        {
+            currentButton.onClick.AddListener(ShowNextDialog);
+        }
+    }
+
+    private void HandleDialogEnd()
+    {
+        if (isPostRuleta)
+        {
+            ShowFinalChoice();
+        }
+        else
+        {
+            EndDialog();
+        }
+    }
+
+    #endregion
+
+    #region Final Choice Handling
+
+    private void ShowFinalChoice()
+    {
+        CleanupCurrentDialog();
+
+        currentDialogInstance = Instantiate(choiceDialogPrefab, Vector3.zero, Quaternion.identity);
+        currentDialogInstance.transform.SetParent(GetCanvasTransform(), false);
+        currentDialogInstance.SetActive(true);
+
+        SetDialogText(currentDialogInstance, "¿Qué prefieres?");
 
         Button reencarnarButton = currentDialogInstance.transform.Find("ReencarnarButton")?.GetComponent<Button>();
         Button juezButton = currentDialogInstance.transform.Find("JuezButton")?.GetComponent<Button>();
@@ -196,10 +253,7 @@ public class DialogManager : MonoBehaviour
             juezButton.onClick.AddListener(OnJuezClicked);
         }
 
-        if (GameManager.instance != null)
-        {
-            GameManager.instance.MarkPostRuletaDialogsSeen();
-        }
+        GameManager.Instance?.MarkPostRuletaDialogsSeen();
     }
 
     private void OnReencarnarClicked()
@@ -209,30 +263,49 @@ public class DialogManager : MonoBehaviour
 
     private void OnJuezClicked()
     {
-        if (GameManager.instance != null)
+        if (GameManager.Instance != null)
         {
-            int playerState = GameManager.instance.GetPlayerState();
-            GameManager.instance.SetNewJudge(playerState);
-            GameManager.instance.SetPlayerAsJudge();
+            int playerState = GameManager.Instance.GetPlayerState();
+            GameManager.Instance.SetNewJudge(playerState);
+            GameManager.Instance.SetPlayerAsJudge();
         }
 
-        BartenderController bartender = FindObjectOfType<BartenderController>();
-        if (bartender != null)
-        {
-            bartender.SetAlternateState(); 
-        }
-
+        UpdateBartenderState();
         SceneManager.LoadScene("EndGame");
     }
 
+    private void UpdateBartenderState()
+    {
+        BartenderController bartender = FindObjectOfType<BartenderController>();
+        bartender?.SetAlternateState();
+    }
+
+    #endregion
+
+    #region Utility Methods
+
     private void EndDialog()
     {
-        Destroy(currentDialogInstance);
+        CleanupCurrentDialog();
         PlayerPrefs.DeleteKey("PreviousScene");
-        PlayerMovement player = FindObjectOfType<PlayerMovement>();
-        if (player != null)
+        EnablePlayerMovement();
+    }
+
+    private void DisablePlayerMovement()
+    {
+        if (cachedPlayerMovement != null)
         {
-            player.canMove = true;
+            cachedPlayerMovement.canMove = false;
         }
     }
+
+    private void EnablePlayerMovement()
+    {
+        if (cachedPlayerMovement != null)
+        {
+            cachedPlayerMovement.canMove = true;
+        }
+    }
+
+    #endregion
 }

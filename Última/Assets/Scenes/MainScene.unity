@@ -3874,7 +3874,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 15
-  playerState: 0
   canMove: 1
 --- !u!1 &834955433
 GameObject:
@@ -5490,9 +5489,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerDialogPrefab: {fileID: 1678651331}
-  SecondPlayerDialogPrefab: {fileID: 1583735763}
+  secondPlayerDialogPrefab: {fileID: 1583735763}
   bartenderDialogPrefab: {fileID: 1861118467}
-  SecondBartenderDialogPrefab: {fileID: 736884925}
+  secondBartenderDialogPrefab: {fileID: 736884925}
   choiceDialogPrefab: {fileID: 749005786}
 --- !u!4 &1468392838
 Transform:

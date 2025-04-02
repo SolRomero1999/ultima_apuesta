@@ -301,9 +301,9 @@ public class ParOImparGame : MonoBehaviour
         if (playerWon)
         {
             // Notificar al GameManager que este minijuego fue completado
-            if (GameManager.instance != null)
+            if (GameManager.Instance != null)
             {
-                GameManager.instance.CompleteMinigame("Par_Impar");
+                GameManager.Instance.CompleteMinigame("Par_Impar");
             }
             SceneManager.LoadScene("MainScene");
         }

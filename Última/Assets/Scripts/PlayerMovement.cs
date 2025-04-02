@@ -22,13 +22,13 @@ public class PlayerMovement : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
         
-        playerState = GameManager.instance.GetPlayerState();
+        playerState = GameManager.Instance.GetPlayerState();
         animator.SetInteger("PlayerState", playerState);
     }
 
     void Update()
     {
-        playerState = GameManager.instance.GetPlayerState();
+        playerState = GameManager.Instance.GetPlayerState();
         
         if (!canMove)
         {
@@ -135,8 +135,8 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetNextState()
     {
-        int newState = (GameManager.instance.GetPlayerState() + 1) % 3;
-        GameManager.instance.SetPlayerState(newState);
+        int newState = (GameManager.Instance.GetPlayerState() + 1) % 3;
+        GameManager.Instance.SetPlayerState(newState);
         Debug.Log("Nuevo playerState: " + newState);
     }
 }

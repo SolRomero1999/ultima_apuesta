@@ -15,9 +15,9 @@ public class MainMenuController : MonoBehaviour
         InvokeRepeating(nameof(CleanTempAlloc), 60f, 60f);
         startButton.onClick.AddListener(StartGame);
 
-        if (GameManager.instance != null)
+        if (GameManager.Instance != null)
         {
-            Destroy(GameManager.instance.gameObject);
+            Destroy(GameManager.Instance.gameObject);
         }
     }
     
