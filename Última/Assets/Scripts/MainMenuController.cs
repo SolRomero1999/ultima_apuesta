@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Scripting;
 
 public class MainMenuController : MonoBehaviour
 {
@@ -11,13 +12,21 @@ public class MainMenuController : MonoBehaviour
         PlayerPrefs.DeleteKey("PreviousScene");
         PlayerPrefs.DeleteKey("CurrentJudgeLevel");
         PlayerPrefs.DeleteKey("PlayerState");
+        InvokeRepeating(nameof(CleanTempAlloc), 60f, 60f);
         startButton.onClick.AddListener(StartGame);
-        
+
         if (GameManager.instance != null)
         {
-            // Esto destruirá el GameManager existente para empezar fresco
             Destroy(GameManager.instance.gameObject);
         }
+    }
+    
+    [Preserve]
+    void CleanTempAlloc()
+    {
+        System.GC.Collect();
+        System.GC.WaitForPendingFinalizers();
+        UnityEngine.Resources.UnloadUnusedAssets();
     }
 
     private void StartGame()

@@ -34,7 +34,7 @@ public class RuletaRusa : MonoBehaviour
     private int posicionActual; 
     private int balaReal;       
     private bool esTurnoDelJugador = false;
-    private bool gameOver = false; 
+    private bool isQuitting = false;
 
     void Start()
     {
@@ -49,6 +49,46 @@ public class RuletaRusa : MonoBehaviour
         dispararDealerButton.onClick.AddListener(() => StartCoroutine(Disparar(true)));
         dispararseButton.onClick.AddListener(() => StartCoroutine(Disparar(false)));
         girarBarrilButton.onClick.AddListener(() => StartCoroutine(GirarBarril()));
+    }
+
+    void OnEnable()
+    {
+        isQuitting = false;
+    }
+
+    void OnDisable()
+    {
+        if (!isQuitting)
+        {
+            CleanUp();
+        }
+    }
+
+    void OnDestroy()
+    {
+        isQuitting = true;
+        CleanUp();
+    }
+
+    void OnApplicationQuit()
+    {
+        isQuitting = true;
+    }
+
+    private void CleanUp()
+    {
+        StopAllCoroutines();
+        
+        if (startButton != null) startButton.onClick.RemoveAllListeners();
+        if (dispararDealerButton != null) dispararDealerButton.onClick.RemoveAllListeners();
+        if (dispararseButton != null) dispararseButton.onClick.RemoveAllListeners();
+        if (girarBarrilButton != null) girarBarrilButton.onClick.RemoveAllListeners();
+
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            audioSource.clip = null;
+        }
     }
 
     void StartGame()
@@ -108,7 +148,10 @@ public class RuletaRusa : MonoBehaviour
     IEnumerator GirarBarril()
     {
         posicionActual = (posicionActual + 1) % barril.Length;
-        audioSource.PlayOneShot(girarClip);
+        if (audioSource != null && girarClip != null)
+        {
+            audioSource.PlayOneShot(girarClip);
+        }
         dealerText.text = "Haz que giren.";
         backgroundImage.sprite = esTurnoDelJugador ? imgJugadorGira : imgDealerGira;
         yield return new WaitForSeconds(2f); 
@@ -134,7 +177,10 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
-                    audioSource.PlayOneShot(disparoClip);
+                    if (audioSource != null && disparoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoClip);
+                    }
                     dealerText.text = "El dealer ha muerto...";
                     backgroundImage.sprite = imgDealerMuerto;
                     yield return new WaitForSeconds(2f); 
@@ -142,7 +188,10 @@ public class RuletaRusa : MonoBehaviour
                 else
                 {
                     backgroundImage.sprite = imgJugadorSuicida; 
-                    audioSource.PlayOneShot(disparoClip);
+                    if (audioSource != null && disparoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoClip);
+                    }
                     dealerText.text = "No es tu día...";
                     yield return StartCoroutine(PlayerDeath()); 
                 }
@@ -152,20 +201,25 @@ public class RuletaRusa : MonoBehaviour
                 if (esTurnoDelJugador)
                 {
                     backgroundImage.sprite = imgJugadorSuicida; 
-                    audioSource.PlayOneShot(disparoClip);
+                    if (audioSource != null && disparoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoClip);
+                    }
                     dealerText.text = "No eres muy listo...";
                     yield return new WaitForSeconds(2f); 
                     yield return StartCoroutine(PlayerDeath()); 
                 }
                 else
                 {
-                    audioSource.PlayOneShot(disparoClip);
+                    if (audioSource != null && disparoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoClip);
+                    }
                     dealerText.text = "El dealer ha muerto...";
                     backgroundImage.sprite = imgDealerMuerto;
                     yield return new WaitForSeconds(2f); 
                 }
             }
-            gameOver = true;
             yield return new WaitForSeconds(2f); 
             StartCoroutine(EndGame());
         }
@@ -175,7 +229,10 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
-                    audioSource.PlayOneShot(disparoFallidoClip);
+                    if (audioSource != null && disparoFallidoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoFallidoClip);
+                    }
                     dealerText.text = "Ahora es mi turno...";
                     backgroundImage.sprite = imgJugadorDispara;
                     AvanzarBarril();
@@ -184,7 +241,10 @@ public class RuletaRusa : MonoBehaviour
                 }
                 else
                 {
-                    audioSource.PlayOneShot(disparoFallidoClip);
+                    if (audioSource != null && disparoFallidoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoFallidoClip);
+                    }
                     dealerText.text = "Vas con suerte...";
                     backgroundImage.sprite = imgDealerDispara;
                     AvanzarBarril();
@@ -199,7 +259,10 @@ public class RuletaRusa : MonoBehaviour
                 if (esTurnoDelJugador)
                 {
                     backgroundImage.sprite = imgJugadorSuicida; 
-                    audioSource.PlayOneShot(disparoFallidoClip);
+                    if (audioSource != null && disparoFallidoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoFallidoClip);
+                    }
                     dealerText.text = "Vas con suerte...";
                     AvanzarBarril();
                     esTurnoDelJugador = true;
@@ -209,7 +272,10 @@ public class RuletaRusa : MonoBehaviour
                 }
                 else
                 {
-                    audioSource.PlayOneShot(disparoFallidoClip);
+                    if (audioSource != null && disparoFallidoClip != null)
+                    {
+                        audioSource.PlayOneShot(disparoFallidoClip);
+                    }
                     dealerText.text = "Otra vez mi turno...";
                     backgroundImage.sprite = imgDealerSuicida;
                     AvanzarBarril();
@@ -231,10 +297,10 @@ public class RuletaRusa : MonoBehaviour
         yield return new WaitForSeconds(2f); 
         SceneManager.LoadScene("MainScene"); 
     }
+
     IEnumerator EndGame()
     {
-        // Notificar al GameManager que este minijuego fue completado
-        if (GameManager.instance != null)
+        if (!isQuitting && GameManager.instance != null)
         {
             GameManager.instance.CompleteMinigame("Ruleta_Rusa");
         }

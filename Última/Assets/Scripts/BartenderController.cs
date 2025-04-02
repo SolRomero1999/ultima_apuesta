@@ -1,23 +1,22 @@
 using UnityEngine;
-
 public class BartenderController : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer spriteRenderer;  // Render del sprite
-    [SerializeField] private Animator animator;  // Referencia al Animator
-
-    [Header("Estado Inicial del Bartender")]
-    [SerializeField] private Sprite initialSprite;  // Sprite inicial
-
-    [Header("Estado Alternativo del Bartender")]
-    [SerializeField] private Sprite alternateSprite;  // Segundo sprite
-
-    private bool isAlternateState = false;  // Estado actual
-
+    [SerializeField] private Animator animator;  
+    private int bartenderState = 0;  
     private void Start()
     {
-        if (GameManager.instance != null && GameManager.instance.IsPlayerJudge())
+        if (GameManager.instance != null)
         {
-            SetAlternateState();
+            bartenderState = GameManager.instance.GetCurrentJudgeLevel();
+            
+            if (bartenderState > 0)
+            {
+                SetAlternateState();
+            }
+            else
+            {
+                SetInitialState();
+            }
         }
         else
         {
@@ -27,30 +26,26 @@ public class BartenderController : MonoBehaviour
 
     public void SetInitialState()
     {
-        spriteRenderer.sprite = initialSprite;
-        isAlternateState = false;
+        bartenderState = 0;
 
-        // Actualizar el parámetro del Animator para cambiar a la animación original
         if (animator != null)
         {
-            animator.SetBool("IsAlternativeState", false);
+            animator.SetInteger("BartenderState", 0);
         }
     }
 
     public void SetAlternateState()
     {
-        spriteRenderer.sprite = alternateSprite;
-        isAlternateState = true;
+        bartenderState = GameManager.instance != null ? GameManager.instance.GetCurrentJudgeLevel() : 1;
 
-        // Actualizar el parámetro del Animator para cambiar a la animación alternativa
         if (animator != null)
         {
-            animator.SetBool("IsAlternativeState", true);
+            animator.SetInteger("BartenderState", bartenderState);
         }
     }
 
-    public bool IsAlternateState()
+    public int GetBartenderState()
     {
-        return isAlternateState;
+        return bartenderState;
     }
 }

@@ -219,7 +219,7 @@ public class DialogManager : MonoBehaviour
         BartenderController bartender = FindObjectOfType<BartenderController>();
         if (bartender != null)
         {
-            bartender.SetAlternateState();
+            bartender.SetAlternateState(); 
         }
 
         SceneManager.LoadScene("EndGame");
