@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameTrigger : MonoBehaviour
 {
+    #region Inspector Variables
     [Header("Scene Settings")]
     [SerializeField] private string[] scenesToLoad = new string[3];
     
@@ -21,15 +22,31 @@ public class GameTrigger : MonoBehaviour
     [Header("Visual Settings")]
     [SerializeField] private Sprite[] stateSprites = new Sprite[3];
     [SerializeField] private SpriteRenderer spriteRenderer;
+    #endregion
 
+    #region Private Variables
     private GameObject dialogInstance;
     private PlayerMovement playerMovement;
     private int currentState;
+    #endregion
 
+    #region Unity Lifecycle
     private void Start()
     {
-        currentState = GameManager.Instance?.GetPlayerState() ?? 0;
+        InitializeState();
         UpdateVisuals();
+    }
+
+    private void OnDestroy()
+    {
+        CleanUpDialog();
+    }
+    #endregion
+
+    #region Initialization
+    private void InitializeState()
+    {
+        currentState = GameManager.Instance?.GetPlayerState() ?? 0;
     }
 
     private void UpdateVisuals()
@@ -39,53 +56,84 @@ public class GameTrigger : MonoBehaviour
             spriteRenderer.sprite = stateSprites[currentState];
         }
     }
+    #endregion
 
+    #region Dialog Management
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            playerMovement = other.GetComponent<PlayerMovement>();
-            playerMovement?.SetMovementEnabled(false);
-            ShowDialog();
+            HandlePlayerInteraction(other);
         }
+    }
+
+    private void HandlePlayerInteraction(Collider2D playerCollider)
+    {
+        playerMovement = playerCollider.GetComponent<PlayerMovement>();
+        playerMovement?.SetMovementEnabled(false);
+        ShowDialog();
     }
 
     private void ShowDialog()
     {
-        if (dialogPrefab == null) return;
+        if (dialogPrefab == null)
+        {
+            Debug.LogWarning("Dialog prefab is not assigned!");
+            return;
+        }
 
-        dialogInstance = Instantiate(dialogPrefab, GameObject.Find("Canvas").transform);
+        CleanUpDialog();
+        CreateDialogInstance();
+    }
+
+    private void CreateDialogInstance()
+    {
+        Transform canvasTransform = GameObject.Find("Canvas")?.transform;
+        if (canvasTransform == null)
+        {
+            Debug.LogError("Canvas not found in scene!");
+            return;
+        }
+
+        dialogInstance = Instantiate(dialogPrefab, canvasTransform);
         dialogInstance.SetActive(true);
         ConfigureDialog();
     }
 
     private void ConfigureDialog()
     {
-        var messageText = dialogInstance.GetComponentInChildren<TMP_Text>();
-        if (messageText == null) return;
+        TMP_Text messageText = dialogInstance.GetComponentInChildren<TMP_Text>();
+        if (messageText == null)
+        {
+            Debug.LogError("No TMP_Text component found in dialog!");
+            return;
+        }
 
-        // Configurar fondo
-        var background = dialogInstance.transform.Find("DialogBackground")?.GetComponent<Image>();
+        ConfigureDialogBackground();
+        SetupDialogButtons(messageText);
+    }
+
+    private void ConfigureDialogBackground()
+    {
+        Image background = dialogInstance.transform.Find("DialogBackground")?.GetComponent<Image>();
         if (background != null && currentState < dialogBackgrounds.Length)
         {
             background.sprite = dialogBackgrounds[currentState];
             background.gameObject.SetActive(background.sprite != null);
         }
+    }
+    #endregion
 
-        // Obtener botones
-        var yesButton = dialogInstance.transform.Find("YesButton")?.GetComponent<Button>();
-        var noButton = dialogInstance.transform.Find("NoButton")?.GetComponent<Button>();
-        var clearButton = dialogInstance.transform.Find("ClearButton")?.GetComponent<Button>();
+    #region Button Setup
+    private void SetupDialogButtons(TMP_Text messageText)
+    {
+        Button yesButton = GetDialogButton("YesButton");
+        Button noButton = GetDialogButton("NoButton");
+        Button clearButton = GetDialogButton("ClearButton");
 
-        // Limpiar listeners previos
-        if (yesButton != null) yesButton.onClick.RemoveAllListeners();
-        if (noButton != null) noButton.onClick.RemoveAllListeners();
-        if (clearButton != null) clearButton.onClick.RemoveAllListeners();
+        ClearButtonListeners(yesButton, noButton, clearButton);
 
-        // Mostrar según el modo
-        bool showOnlyMessage = currentState < showOnlyMessageStates.Length && showOnlyMessageStates[currentState];
-        
-        if (showOnlyMessage)
+        if (ShouldShowSimpleMessage())
         {
             SetupSimpleDialog(messageText, clearButton, yesButton, noButton);
         }
@@ -99,14 +147,33 @@ public class GameTrigger : MonoBehaviour
         }
     }
 
+    private Button GetDialogButton(string buttonName)
+    {
+        Transform buttonTransform = dialogInstance.transform.Find(buttonName);
+        return buttonTransform?.GetComponent<Button>();
+    }
+
+    private void ClearButtonListeners(params Button[] buttons)
+    {
+        foreach (Button button in buttons)
+        {
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners();
+            }
+        }
+    }
+
+    private bool ShouldShowSimpleMessage()
+    {
+        return currentState < showOnlyMessageStates.Length && 
+               showOnlyMessageStates[currentState];
+    }
+
     private void SetupSimpleDialog(TMP_Text text, Button clearBtn, Button yesBtn, Button noBtn)
     {
         text.text = GetCurrentMessage();
-        if (clearBtn != null)
-        {
-            clearBtn.onClick.AddListener(CloseDialog);
-            clearBtn.gameObject.SetActive(true);
-        }
+        SetupButton(clearBtn, CloseDialog);
         SetButtonActive(yesBtn, false);
         SetButtonActive(noBtn, false);
     }
@@ -114,16 +181,8 @@ public class GameTrigger : MonoBehaviour
     private void SetupSpecialDialog(TMP_Text text, Button yesBtn, Button noBtn, Button clearBtn)
     {
         text.text = GetCurrentMessage();
-        if (yesBtn != null)
-        {
-            yesBtn.onClick.AddListener(OnYesClicked);
-            yesBtn.gameObject.SetActive(true);
-        }
-        if (noBtn != null)
-        {
-            noBtn.onClick.AddListener(CloseDialog);
-            noBtn.gameObject.SetActive(true);
-        }
+        SetupButton(yesBtn, OnYesClicked);
+        SetupButton(noBtn, CloseDialog);
         SetButtonActive(clearBtn, false);
     }
 
@@ -134,62 +193,65 @@ public class GameTrigger : MonoBehaviour
         if (GameManager.Instance != null && GameManager.Instance.IsMinigameCompleted(scene))
         {
             text.text = "¡Ya completaste este desafío! Ve al siguiente juego.";
-            if (clearBtn != null)
-            {
-                clearBtn.onClick.AddListener(CloseDialog);
-                clearBtn.gameObject.SetActive(true);
-            }
+            SetupButton(clearBtn, CloseDialog);
             SetButtonActive(yesBtn, false);
             SetButtonActive(noBtn, false);
         }
         else if (CanEnterMinigame())
         {
             text.text = GetCurrentMessage();
-            if (yesBtn != null)
-            {
-                yesBtn.onClick.AddListener(OnYesClicked);
-                yesBtn.gameObject.SetActive(true);
-            }
-            if (noBtn != null)
-            {
-                noBtn.onClick.AddListener(CloseDialog);
-                noBtn.gameObject.SetActive(true);
-            }
+            SetupButton(yesBtn, OnYesClicked);
+            SetupButton(noBtn, CloseDialog);
             SetButtonActive(clearBtn, false);
         }
         else
         {
             text.text = "Aún no estás listo... date una vuelta.";
-            if (clearBtn != null)
-            {
-                clearBtn.onClick.AddListener(CloseDialog);
-                clearBtn.gameObject.SetActive(true);
-            }
+            SetupButton(clearBtn, CloseDialog);
             SetButtonActive(yesBtn, false);
             SetButtonActive(noBtn, false);
         }
     }
 
-    private string GetCurrentMessage()
+    private void SetupButton(Button button, UnityEngine.Events.UnityAction action)
     {
-        return currentState < dialogMessages.Length ? dialogMessages[currentState] : "";
-    }
-
-    private string GetCurrentScene()
-    {
-        return currentState < scenesToLoad.Length ? scenesToLoad[currentState] : "";
-    }
-
-    private bool CanEnterMinigame()
-    {
-        return GameManager.Instance == null || GameManager.Instance.CanPlay(GetCurrentScene());
+        if (button != null)
+        {
+            button.onClick.AddListener(action);
+            button.gameObject.SetActive(true);
+        }
     }
 
     private void SetButtonActive(Button button, bool active)
     {
-        if (button != null) button.gameObject.SetActive(active);
+        if (button != null)
+        {
+            button.gameObject.SetActive(active);
+        }
+    }
+    #endregion
+
+    #region Utility Methods
+    private string GetCurrentMessage()
+    {
+        return currentState < dialogMessages.Length ? 
+               dialogMessages[currentState] : "Mensaje no configurado";
     }
 
+    private string GetCurrentScene()
+    {
+        return currentState < scenesToLoad.Length ? 
+               scenesToLoad[currentState] : string.Empty;
+    }
+
+    private bool CanEnterMinigame()
+    {
+        return GameManager.Instance == null || 
+               GameManager.Instance.CanPlay(GetCurrentScene());
+    }
+    #endregion
+
+    #region Button Actions
     private void OnYesClicked()
     {
         string scene = GetCurrentScene();
@@ -202,11 +264,31 @@ public class GameTrigger : MonoBehaviour
 
     private void CloseDialog()
     {
+        CleanUpDialog();
+        RestorePlayerMovement();
+    }
+
+    private void CleanUpDialog()
+    {
         if (dialogInstance != null)
         {
             Destroy(dialogInstance);
             dialogInstance = null;
         }
-        playerMovement?.SetMovementEnabled(true);
     }
+
+    private void RestorePlayerMovement()
+    {
+        playerMovement?.SetMovementEnabled(true);
+        playerMovement = null; // Clear reference
+    }
+    #endregion
+
+    #region Public Methods
+    public void RefreshState()
+    {
+        InitializeState();
+        UpdateVisuals();
+    }
+    #endregion
 }

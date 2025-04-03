@@ -1527,7 +1527,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 371146653}
 --- !u!61 &371146652
 BoxCollider2D:
@@ -3130,7 +3130,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 679349046}
 --- !u!61 &679349045
 BoxCollider2D:
@@ -4073,7 +4073,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 853590690}
 --- !u!61 &853590689
 BoxCollider2D:
@@ -4231,7 +4231,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 908684691}
 --- !u!61 &908684690
 BoxCollider2D:
@@ -5448,7 +5448,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 1439082052}
 --- !u!61 &1439082051
 BoxCollider2D:
@@ -6776,7 +6776,7 @@ MonoBehaviour:
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 63dee77714e1f784a83183c772dc57fc, type: 3}
-  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
   spriteRenderer: {fileID: 1703600266}
 --- !u!1 &1704280324
 GameObject:
