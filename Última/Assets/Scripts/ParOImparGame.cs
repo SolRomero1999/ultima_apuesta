@@ -300,11 +300,11 @@ public class ParOImparGame : MonoBehaviour
         
         if (playerWon)
         {
-            // Notificar al GameManager que este minijuego fue completado
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.CompleteMinigame("Par_Impar");
             }
+            PlayerPrefs.SetString("LastScene", "Par_Impar");
             SceneManager.LoadScene("MainScene");
         }
         else
@@ -317,6 +317,7 @@ public class ParOImparGame : MonoBehaviour
     {
         blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
+        PlayerPrefs.SetString("LastScene", "Par_Impar");
         SceneManager.LoadScene("MainScene");
     }
 }

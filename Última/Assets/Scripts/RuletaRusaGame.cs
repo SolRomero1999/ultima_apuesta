@@ -299,6 +299,7 @@ public class RuletaRusa : MonoBehaviour
     {
         blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
+        PlayerPrefs.SetString("LastScene", "Ruleta_Rusa");
         SceneManager.LoadScene("MainScene");
     }
 
@@ -310,6 +311,7 @@ public class RuletaRusa : MonoBehaviour
         }
         
         yield return new WaitForSeconds(2f);
+        PlayerPrefs.SetString("LastScene", "Ruleta_Rusa");
         SceneManager.LoadScene("MainScene");
     }
     #endregion
