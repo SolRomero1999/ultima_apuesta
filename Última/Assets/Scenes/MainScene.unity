@@ -1497,7 +1497,7 @@ GameObject:
   - component: {fileID: 371146652}
   - component: {fileID: 371146651}
   m_Layer: 0
-  m_Name: Dardos
+  m_Name: 4Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1515,12 +1515,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  dialogMessage: Vuelve en otro momento
+  scenesToLoad: []
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 1
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - Vuelve en otro momento
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0101
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 371146653}
 --- !u!61 &371146652
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3092,7 +3100,7 @@ GameObject:
   - component: {fileID: 679349045}
   - component: {fileID: 679349044}
   m_Layer: 0
-  m_Name: Encuentra el ojo
+  m_Name: 2Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3110,12 +3118,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  dialogMessage: Vuelve en otro momento
+  scenesToLoad: []
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 1
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - Vuelve en otro momento
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0101
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 679349046}
 --- !u!61 &679349045
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3335,12 +3351,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: MainMenu
-  dialogMessage: "\xBFQuieres volver al men\xFA? Perder\xE1s tu prograso"
+  scenesToLoad:
+  - MainMenu
+  - MainMenu
+  - MainMenu
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 0
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - "\xBFSeguro que quieres salir? Perder\xE1s tu progreso actual"
+  - "\xBFSeguro que quieres salir? Perder\xE1s tu progreso actual"
+  - "\xBFSeguro que quieres salir? Perder\xE1s tu progreso actual"
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 
   isSpecialMessage: 1
+  stateSprites: []
+  spriteRenderer: {fileID: 703524449}
 --- !u!212 &703524449
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4016,7 +4043,7 @@ GameObject:
   - component: {fileID: 853590689}
   - component: {fileID: 853590688}
   m_Layer: 0
-  m_Name: Juego de memoria
+  m_Name: 3Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4034,12 +4061,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  dialogMessage: Vuelve en otro momento
+  scenesToLoad: []
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 1
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - Vuelve en otro momento
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0101
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 853590690}
 --- !u!61 &853590689
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4166,7 +4201,7 @@ GameObject:
   - component: {fileID: 908684690}
   - component: {fileID: 908684689}
   m_Layer: 0
-  m_Name: "Sim\xF3n dice"
+  m_Name: 5Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4184,12 +4219,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  dialogMessage: Vuelve en otro momento
+  scenesToLoad: []
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 1
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - Vuelve en otro momento
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0101
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 908684691}
 --- !u!61 &908684690
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5375,7 +5418,7 @@ GameObject:
   - component: {fileID: 1439082051}
   - component: {fileID: 1439082050}
   m_Layer: 0
-  m_Name: Tragamonedas
+  m_Name: 1Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5393,12 +5436,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: 
-  dialogMessage: Vuelve en otro momento
+  scenesToLoad: []
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 1
-  dialogBackgroundImage: {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  dialogMessages:
+  - Vuelve en otro momento
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0101
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 1439082052}
 --- !u!61 &1439082051
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6581,7 +6632,7 @@ GameObject:
   - component: {fileID: 1703600265}
   - component: {fileID: 1703600268}
   m_Layer: 0
-  m_Name: Par o Impar
+  m_Name: 6Juego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6712,12 +6763,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Par_Impar
-  dialogMessage: "\xBFQuieres jugar par o impar conmigo?"
+  scenesToLoad:
+  - Par_Impar
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 0
-  dialogBackgroundImage: {fileID: 21300000, guid: 7bf913374c8d9e14c984ab9b8bf0a86a, type: 3}
+  dialogMessages:
+  - "\xBFQuieres jugar par o impar conmigo? "
+  - Vuelve en otro momento
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 7bf913374c8d9e14c984ab9b8bf0a86a, type: 3}
+  - {fileID: 21300000, guid: 9ea79a6d38dd0ec4d860438e446b41df, type: 3}
+  showOnlyMessageStates: 0001
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 63dee77714e1f784a83183c772dc57fc, type: 3}
+  - {fileID: 21300000, guid: 2ea709ae72d3dc44ba0ac336a5349b32, type: 3}
+  spriteRenderer: {fileID: 1703600266}
 --- !u!1 &1704280324
 GameObject:
   m_ObjectHideFlags: 0
@@ -6733,7 +6793,7 @@ GameObject:
   - component: {fileID: 1704280330}
   - component: {fileID: 1704280331}
   m_Layer: 0
-  m_Name: Bar
+  m_Name: BarUltimoJuego
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6751,13 +6811,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneToLoad: Ruleta_Rusa
-  dialogMessage: "Parece que ya est\xE1s listo. \xBFQuieres jugar a la Ruleta Rusa
-    conmigo?"
+  scenesToLoad:
+  - Ruleta_Rusa
   dialogPrefab: {fileID: 1802957815}
-  showOnlyMessage: 0
-  dialogBackgroundImage: {fileID: 21300000, guid: 25361980e65f31c46ade8e3ea5fdd849, type: 3}
+  dialogMessages:
+  - "Parece que estas listo \xBFQuieres jugar a la ruleta rusa conmigo?"
+  - Esto aun no esta disponible
+  dialogBackgrounds:
+  - {fileID: 21300000, guid: 25361980e65f31c46ade8e3ea5fdd849, type: 3}
+  - {fileID: 21300000, guid: bff48f54b14e67842a00e83be4744bf8, type: 3}
+  showOnlyMessageStates: 0001
   isSpecialMessage: 0
+  stateSprites:
+  - {fileID: 21300000, guid: 7542c3a1c082fa447a1d6a5d2924f405, type: 3}
+  - {fileID: 21300000, guid: 5debc726194aef3478f4913b533158e4, type: 3}
+  spriteRenderer: {fileID: 1704280327}
 --- !u!61 &1704280326
 BoxCollider2D:
   m_ObjectHideFlags: 0
