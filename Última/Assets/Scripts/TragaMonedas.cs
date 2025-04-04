@@ -9,6 +9,8 @@ public class TragaMonedas : MonoBehaviour
     [Header("Configuración Visual")]
     [SerializeField] private Sprite machineNormal;
     [SerializeField] private Sprite machineLeverDown;
+    [SerializeField] private Sprite machineWin;    
+    [SerializeField] private Sprite machineLose;  
     [SerializeField] private Sprite[] symbols;
     
     [Header("Componentes UI")]
@@ -24,9 +26,19 @@ public class TragaMonedas : MonoBehaviour
     [SerializeField] private float initialSpinSpeed = 0.05f;
     [SerializeField] private float finalSpinSpeed = 0.2f;
     [SerializeField] private float winDelay = 0.5f; 
+    [SerializeField] private float resultDisplayTime = 1.5f; 
 
     [Header("Configuración Dificultad")]
     [Range(0, 100)] [SerializeField] private int probabilidadGanar = 15; 
+
+    private string[] mensajesDerrota = { 
+        "Mala Suerte", 
+        "Quizá la próxima", 
+        "Error 404: Premio no encontrado.", 
+        "Hoy no, quizá nunca.", 
+        "Si esto fuera casino, ya estarías en bancarrota."
+        };
+    [Range(0, 100)] [SerializeField] private int probabilidadMensajeDerrota = 50;
 
     private bool isSpinning = false;
     private int[] currentResults = new int[3];
@@ -47,6 +59,7 @@ public class TragaMonedas : MonoBehaviour
     private void ResetGame()
     {
         winPanel.SetActive(false); 
+        machineImage.sprite = machineNormal; 
         ResetSlots();
     }
 
@@ -80,7 +93,7 @@ public class TragaMonedas : MonoBehaviour
         yield return new WaitForSeconds(totalSpinTime - leverDownTime);
         
         StopCoroutine(spinSlotsCoroutine);
-        yield return StartCoroutine(CheckWin()); 
+        yield return StartCoroutine(ShowResult()); 
         isSpinning = false;
     }
 
@@ -125,14 +138,16 @@ public class TragaMonedas : MonoBehaviour
         }
     }
 
-    private IEnumerator CheckWin()
+    private IEnumerator ShowResult()
     {
         bool win = currentResults[0] == currentResults[1] && 
-                 currentResults[1] == currentResults[2];
+                  currentResults[1] == currentResults[2];
+        
+        machineImage.sprite = win ? machineWin : machineLose;
         
         if (win)
         {
-            winText.text = "¡GANASTE!";
+            winText.text = "Bien, puedes ir al siguiente juego";
             winPanel.SetActive(true); 
             
             yield return new WaitForSeconds(winDelay);
@@ -140,6 +155,24 @@ public class TragaMonedas : MonoBehaviour
             SceneManager.LoadScene("MainScene");
             GameManager.Instance.CompleteMinigame("Traga_Monedas");
             PlayerPrefs.SetString("LastScene", "Traga_Monedas");
+        }
+        else
+        {
+            if (Random.Range(0, 100) < probabilidadMensajeDerrota)
+            {
+                string mensajeAleatorio = mensajesDerrota[Random.Range(0, mensajesDerrota.Length)];
+                winText.text = mensajeAleatorio;
+                winPanel.SetActive(true);
+                
+                yield return new WaitForSeconds(resultDisplayTime);
+                winPanel.SetActive(false);
+            }
+            else
+            {
+                yield return new WaitForSeconds(resultDisplayTime);
+            }
+            
+            machineImage.sprite = machineNormal;
         }
     }
 }
