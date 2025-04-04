@@ -44,6 +44,7 @@ public class RuletaRusa : MonoBehaviour
     private int balaReal;
     private bool esTurnoDelJugador = false;
     private bool isQuitting = false;
+    private bool buttonsBlocked = false;
     
     private string[] rulesDialogue = new string[]
     {
@@ -120,9 +121,15 @@ public class RuletaRusa : MonoBehaviour
 
     private void SetupButtonListeners()
     {
-        dispararDealerButton.onClick.AddListener(() => StartCoroutine(Disparar(true)));
-        dispararseButton.onClick.AddListener(() => StartCoroutine(Disparar(false)));
-        girarBarrilButton.onClick.AddListener(() => StartCoroutine(GirarBarril()));
+        dispararDealerButton.onClick.AddListener(() => {
+            if (!buttonsBlocked) StartCoroutine(Disparar(true));
+        });
+        dispararseButton.onClick.AddListener(() => {
+            if (!buttonsBlocked) StartCoroutine(Disparar(false));
+        });
+        girarBarrilButton.onClick.AddListener(() => {
+            if (!buttonsBlocked) StartCoroutine(GirarBarril());
+        });
     }
 
     private void CleanUp()
@@ -139,6 +146,16 @@ public class RuletaRusa : MonoBehaviour
             audioSource.Stop();
             audioSource.clip = null;
         }
+    }
+    #endregion
+
+    #region Button Management
+    private void SetButtonsInteractable(bool interactable)
+    {
+        dispararDealerButton.interactable = interactable;
+        dispararseButton.interactable = interactable;
+        girarBarrilButton.interactable = interactable;
+        buttonsBlocked = !interactable;
     }
     #endregion
 
@@ -189,6 +206,7 @@ public class RuletaRusa : MonoBehaviour
 
     private IEnumerator DealerTurn()
     {
+        SetButtonsInteractable(false);
         esTurnoDelJugador = false;
         shootPanel.SetActive(false);
         backgroundImage.sprite = imgInicial;
@@ -221,6 +239,8 @@ public class RuletaRusa : MonoBehaviour
 
     private IEnumerator GirarBarril()
     {
+        SetButtonsInteractable(false);
+        
         posicionActual = (posicionActual + 1) % barril.Length;
         PlaySound(girarClip);
         
@@ -233,7 +253,8 @@ public class RuletaRusa : MonoBehaviour
             esTurnoDelJugador = true;
             shootPanel.SetActive(true);
             backgroundImage.sprite = imgInicial;
-            yield return new WaitForSeconds(2f);
+            SetButtonsInteractable(true);
+            yield return new WaitForSeconds(0.1f); 
         }
         else
         {
@@ -243,6 +264,8 @@ public class RuletaRusa : MonoBehaviour
 
     private IEnumerator Disparar(bool dispararAlJugador)
     {
+        SetButtonsInteractable(false);
+        
         if (posicionActual == balaReal) 
         {
             if (dispararAlJugador)
@@ -261,7 +284,9 @@ public class RuletaRusa : MonoBehaviour
                     backgroundImage.sprite = imgJugadorSuicida;
                     PlaySound(disparoClip);
                     dealerText.text = "No es tu día...";
+                    yield return new WaitForSeconds(1f);
                     yield return StartCoroutine(PlayerDeath());
+                    yield break;
                 }
             }
             else
@@ -271,8 +296,9 @@ public class RuletaRusa : MonoBehaviour
                     backgroundImage.sprite = imgJugadorSuicida;
                     PlaySound(disparoClip);
                     dealerText.text = "No eres muy listo...";
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(1f);
                     yield return StartCoroutine(PlayerDeath());
+                    yield break;
                 }
                 else
                 {
@@ -282,7 +308,7 @@ public class RuletaRusa : MonoBehaviour
                     yield return new WaitForSeconds(2f);
                 }
             }
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
             StartCoroutine(EndGame());
         }
         else 
@@ -307,7 +333,8 @@ public class RuletaRusa : MonoBehaviour
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
                     backgroundImage.sprite = imgInicial;
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(0.5f); 
+                    SetButtonsInteractable(true);
                 }
             }
             else
@@ -321,7 +348,8 @@ public class RuletaRusa : MonoBehaviour
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
                     backgroundImage.sprite = imgInicial;
-                    yield return new WaitForSeconds(2f);
+                    yield return new WaitForSeconds(0.5f); 
+                    SetButtonsInteractable(true);
                 }
                 else
                 {
