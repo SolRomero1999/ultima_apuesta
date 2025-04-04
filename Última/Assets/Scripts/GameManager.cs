@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour
     #region Minigames Management
     private readonly List<string> _minigamesOrder = new List<string>
     {
+        "Traga_Monedas",
         "Par_Impar",
         "Ruleta_Rusa"
     };
