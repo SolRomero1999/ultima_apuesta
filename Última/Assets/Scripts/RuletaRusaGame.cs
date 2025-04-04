@@ -7,9 +7,9 @@ using UnityEngine.SceneManagement;
 public class RuletaRusa : MonoBehaviour
 {
     #region UI References
-    [Header("UI References")]
     public GameObject rulesPanel;
     public Button startButton;
+    public TMP_Text rulesText; 
     public TMP_Text dealerText;
     public GameObject shootPanel;
     public Button dispararDealerButton;
@@ -21,7 +21,6 @@ public class RuletaRusa : MonoBehaviour
     #endregion
 
     #region Visual Assets
-    [Header("Visual Assets")]
     public Sprite imgInicial;
     public Sprite imgDealerGira;
     public Sprite imgDealerDispara;
@@ -33,7 +32,6 @@ public class RuletaRusa : MonoBehaviour
     #endregion
 
     #region Audio
-    [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip disparoClip;
     public AudioClip disparoFallidoClip;
@@ -46,11 +44,27 @@ public class RuletaRusa : MonoBehaviour
     private int balaReal;
     private bool esTurnoDelJugador = false;
     private bool isQuitting = false;
+    
+    private string[] rulesDialogue = new string[]
+    {
+        "No nos compliquemos la vida, vayamos con algo sencillo",
+        "Imagino que conoces la ruleta rusa, pero por las dudas te explicaré...",
+        "Este revolver tiene 6 espacios en el barril, pero solo 1 bala",
+        "Nos turnaremos para disparar",
+        "Si te crees valiente puedes usar tu turno para dispararte a ti mismo",
+        "Si vas con suerte y te salvas tienes otro turno",
+        "Además tenemos la opción de girar el barril, pero de hacerlo pierdes tu turno",
+        "Sencillo, ¿no?"
+    };
+    private int currentDialogueIndex = 0;
+    private bool hasPlayedBefore = false;
     #endregion
 
     #region Unity Lifecycle Methods
     private void Start()
     {
+        hasPlayedBefore = PlayerPrefs.GetInt("HasPlayedRuletaRusaBefore", 0) == 1;
+
         InitializeUI();
         SetupButtonListeners();
     }
@@ -89,11 +103,23 @@ public class RuletaRusa : MonoBehaviour
         backgroundImage.sprite = imgInicial;
         blackScreen.SetActive(false);
         dialoguePanel.SetActive(false);
+        
+        if (hasPlayedBefore)
+        {
+            rulesText.text = "Aquí de nuevo... bueno, empecemos";
+            startButton.onClick.RemoveAllListeners();
+            startButton.onClick.AddListener(StartGame);
+        }
+        else
+        {
+            rulesText.text = rulesDialogue[currentDialogueIndex];
+            startButton.onClick.RemoveAllListeners();
+            startButton.onClick.AddListener(AdvanceDialogue);
+        }
     }
 
     private void SetupButtonListeners()
     {
-        startButton.onClick.AddListener(StartGame);
         dispararDealerButton.onClick.AddListener(() => StartCoroutine(Disparar(true)));
         dispararseButton.onClick.AddListener(() => StartCoroutine(Disparar(false)));
         girarBarrilButton.onClick.AddListener(() => StartCoroutine(GirarBarril()));
@@ -117,6 +143,21 @@ public class RuletaRusa : MonoBehaviour
     #endregion
 
     #region Game Flow
+    private void AdvanceDialogue()
+    {
+        currentDialogueIndex++;
+        
+        if (currentDialogueIndex < rulesDialogue.Length)
+        {
+            rulesText.text = rulesDialogue[currentDialogueIndex];
+        }
+        else
+        {
+            PlayerPrefs.SetInt("HasPlayedRuletaRusaBefore", 1);
+            StartGame();
+        }
+    }
+
     private void StartGame()
     {
         rulesPanel.SetActive(false);
@@ -155,21 +196,21 @@ public class RuletaRusa : MonoBehaviour
 
         int decision = Random.Range(0, 100);
 
-        if (decision < 50) // Disparar al jugador (50%)
+        if (decision < 50) 
         {
             backgroundImage.sprite = imgDealerDispara;
             dealerText.text = "Veamos si la suerte te acompaña...";
             yield return new WaitForSeconds(2f);
             yield return StartCoroutine(Disparar(true));
         }
-        else if (decision < 80) // Dispararse a sí mismo (30%)
+        else if (decision < 80) 
         {
             backgroundImage.sprite = imgDealerSuicida;
             dealerText.text = "Espero tener suerte...";
             yield return new WaitForSeconds(2f);
             yield return StartCoroutine(Disparar(false));
         }
-        else // Girar el barril (20%)
+        else 
         {
             backgroundImage.sprite = imgDealerGira;
             dealerText.text = "Hagamoslo más interesante";
@@ -202,7 +243,7 @@ public class RuletaRusa : MonoBehaviour
 
     private IEnumerator Disparar(bool dispararAlJugador)
     {
-        if (posicionActual == balaReal) // Bala real
+        if (posicionActual == balaReal) 
         {
             if (dispararAlJugador)
             {
@@ -244,7 +285,7 @@ public class RuletaRusa : MonoBehaviour
             yield return new WaitForSeconds(2f);
             StartCoroutine(EndGame());
         }
-        else // Bala falsa
+        else 
         {
             if (dispararAlJugador)
             {

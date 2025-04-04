@@ -12,6 +12,8 @@ public class MainMenuController : MonoBehaviour
         PlayerPrefs.DeleteKey("PreviousScene");
         PlayerPrefs.DeleteKey("CurrentJudgeLevel");
         PlayerPrefs.DeleteKey("PlayerState");
+        PlayerPrefs.DeleteKey("HasPlayedParImparBefore");
+        PlayerPrefs.DeleteKey("HasPlayedRuletaRusaBefore");
         InvokeRepeating(nameof(CleanTempAlloc), 60f, 60f);
         startButton.onClick.AddListener(StartGame);
 
