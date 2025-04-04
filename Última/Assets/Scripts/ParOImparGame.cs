@@ -150,6 +150,8 @@ public class ParOImparGame : MonoBehaviour
     IEnumerator PlayerChoiceCoroutine(bool chosePar)
     {
         if (gameOver) yield break;
+        parButton.gameObject.SetActive(false); 
+        imparButton.gameObject.SetActive(false);
 
         bool isDealerNumberPar = (dealerNumber % 2 == 0);
 
