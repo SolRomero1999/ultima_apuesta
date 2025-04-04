@@ -137,9 +137,9 @@ public class TragaMonedas : MonoBehaviour
             
             yield return new WaitForSeconds(winDelay);
             
+            SceneManager.LoadScene("MainScene");
             GameManager.Instance.CompleteMinigame("Traga_Monedas");
             PlayerPrefs.SetString("LastScene", "Traga_Monedas");
-            SceneManager.LoadScene("MainScene");
         }
     }
 }
