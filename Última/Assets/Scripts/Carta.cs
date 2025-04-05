@@ -37,6 +37,6 @@ public class Carta : MonoBehaviour
     public void Emparejar()
     {
         estaEmparejada = true;
-        botonCarta.interactable = false; // Desactivar clics en cartas emparejadas
+        botonCarta.interactable = false;
     }
 }
