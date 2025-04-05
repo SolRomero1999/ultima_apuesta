@@ -21,8 +21,8 @@ public class JuegoMemoria : MonoBehaviour
     public GameObject turnPanel;
     public TMP_Text turnText;
     public GameObject blackScreen;
-    public TMP_Text playerPairsText; // Texto para parejas del jugador
-    public TMP_Text dealerPairsText; // Texto para parejas del dealer
+    public TMP_Text playerPairsText;
+    public TMP_Text dealerPairsText;
     #endregion
 
     #region Diálogos
@@ -60,6 +60,9 @@ public class JuegoMemoria : MonoBehaviour
     private bool esTurnoJugador = false;
     private bool[] cartasVolteadas;
     private bool primerTurnoDealer = true;
+    private int[] memoriaDealer = new int[6]; 
+    private int indiceMemoria = 0;
+    private int[] cartasJugadorTurnoAnterior = new int[2] { -1, -1 }; 
     #endregion
 
     #region Unity Callbacks
@@ -72,6 +75,12 @@ public class JuegoMemoria : MonoBehaviour
     #region Inicialización
     private void InitializeGame()
     {
+        for (int i = 0; i < memoriaDealer.Length; i++)
+        {
+            memoriaDealer[i] = -1;
+        }
+        indiceMemoria = 0;
+
         gamePanel.SetActive(false);
         turnPanel.SetActive(false);
         blackScreen.SetActive(false);
@@ -79,7 +88,6 @@ public class JuegoMemoria : MonoBehaviour
         rulesText.text = introDialogue[currentDialogueIndex];
         nextButton.onClick.AddListener(AdvanceDialogue);
         
-        // Inicializar textos (aunque no son visibles todavía)
         playerPairsText.text = "Tus parejas: 0";
         dealerPairsText.text = "Mis parejas: 0";
     }
@@ -108,7 +116,7 @@ public class JuegoMemoria : MonoBehaviour
         tarotistaImage.gameObject.SetActive(false);
         gamePanel.SetActive(true);
         CrearTablero();
-        UpdatePairsUI(); // Actualizar UI al iniciar
+        UpdatePairsUI();
         StartCoroutine(DealerTurn());
     }
 
@@ -143,7 +151,6 @@ public class JuegoMemoria : MonoBehaviour
         }
     }
 
-    // Método para actualizar los textos de las parejas
     private void UpdatePairsUI()
     {
         playerPairsText.text = $"Tus parejas: {paresJugador}";
@@ -169,21 +176,34 @@ public class JuegoMemoria : MonoBehaviour
         esTurnoJugador = false;
         yield return new WaitForSeconds(0.5f);
 
-        int primeraCartaIndex = SeleccionarCartaAleatoria();
+        int primeraCartaIndex = BuscarParejaEnMemoria();
+        if (primeraCartaIndex == -1)
+        {
+            primeraCartaIndex = SeleccionarCartaAleatoria(excluirCartasJugador: true);
+        }
+        
         yield return StartCoroutine(VoltearCartaAnimacion(primeraCartaIndex));
+        AgregarAMemoria(primeraCartaIndex);
         yield return new WaitForSeconds(0.5f);
 
-        int segundaCartaIndex = SeleccionarCartaAleatoria(primeraCartaIndex);
+        int segundaCartaIndex = BuscarParejaEnMemoria(primeraCartaIndex);
+        if (segundaCartaIndex == -1)
+        {
+            segundaCartaIndex = SeleccionarCartaAleatoria(primeraCartaIndex, excluirCartasJugador: true);
+        }
+        
         yield return StartCoroutine(VoltearCartaAnimacion(segundaCartaIndex));
+        AgregarAMemoria(segundaCartaIndex);
         yield return new WaitForSeconds(0.5f);
 
         if (cartas[primeraCartaIndex].Diseno == cartas[segundaCartaIndex].Diseno)
         {
             paresDealer++;
-            UpdatePairsUI(); // Actualizar UI cuando el dealer consigue pareja
+            UpdatePairsUI();
             cartas[primeraCartaIndex].Emparejar();
             cartas[segundaCartaIndex].Emparejar();
             turnText.text = "¡Pareja encontrada!";
+            LimpiarMemoria();
         }
         else
         {
@@ -205,8 +225,67 @@ public class JuegoMemoria : MonoBehaviour
         }
     }
 
+    private void AgregarAMemoria(int cartaID)
+    {
+        if (cartas[cartaID].EstaEmparejada) return;
+        
+        memoriaDealer[indiceMemoria] = cartaID;
+        indiceMemoria = (indiceMemoria + 1) % memoriaDealer.Length;
+    }
+
+    private int BuscarParejaEnMemoria(int cartaID = -1)
+    {
+        if (cartaID == -1)
+        {
+            for (int i = 0; i < memoriaDealer.Length; i++)
+            {
+                int id1 = memoriaDealer[i];
+                if (id1 == -1 || cartas[id1].EstaEmparejada || cartasVolteadas[id1]) continue;
+                
+                for (int j = i + 1; j < memoriaDealer.Length; j++)
+                {
+                    int id2 = memoriaDealer[j];
+                    if (id2 != -1 && !cartas[id2].EstaEmparejada && !cartasVolteadas[id2] && 
+                        cartas[id1].Diseno == cartas[id2].Diseno)
+                    {
+                        return id1;
+                    }
+                }
+            }
+        }
+        else
+        {
+            Sprite diseñoBuscado = cartas[cartaID].Diseno;
+            for (int i = 0; i < memoriaDealer.Length; i++)
+            {
+                int id = memoriaDealer[i];
+                if (id != -1 && id != cartaID && !cartas[id].EstaEmparejada && 
+                    !cartasVolteadas[id] && cartas[id].Diseno == diseñoBuscado)
+                {
+                    return id;
+                }
+            }
+        }
+        
+        return -1;
+    }
+
+    private void LimpiarMemoria()
+    {
+        for (int i = 0; i < memoriaDealer.Length; i++)
+        {
+            if (memoriaDealer[i] != -1 && cartas[memoriaDealer[i]].EstaEmparejada)
+            {
+                memoriaDealer[i] = -1;
+            }
+        }
+    }
+
     private IEnumerator PlayerTurn()
     {
+        cartasJugadorTurnoAnterior[0] = -1;
+        cartasJugadorTurnoAnterior[1] = -1;
+
         esTurnoJugador = true;
         puedeSeleccionar = true;
         primeraCartaSeleccionada = null;
@@ -227,14 +306,17 @@ public class JuegoMemoria : MonoBehaviour
 
         cartaSeleccionada.Voltear();
         cartasVolteadas[id] = true;
+        AgregarAMemoria(id);
 
         if (primeraCartaSeleccionada == null)
         {
             primeraCartaSeleccionada = cartaSeleccionada;
+            cartasJugadorTurnoAnterior[0] = id;
         }
         else
         {
             segundaCartaSeleccionada = cartaSeleccionada;
+            cartasJugadorTurnoAnterior[1] = id;
             puedeSeleccionar = false;
             StartCoroutine(VerificarParejaJugador());
         }
@@ -245,10 +327,11 @@ public class JuegoMemoria : MonoBehaviour
         if (primeraCartaSeleccionada.Diseno == segundaCartaSeleccionada.Diseno)
         {
             paresJugador++;
-            UpdatePairsUI(); // Actualizar UI cuando el jugador consigue pareja
+            UpdatePairsUI();
             primeraCartaSeleccionada.Emparejar();
             segundaCartaSeleccionada.Emparejar();
             turnText.text = "Tienes suerte";
+            LimpiarMemoria();
         }
         else
         {
@@ -287,11 +370,23 @@ public class JuegoMemoria : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    private int SeleccionarCartaAleatoria(int excluir = -1)
+    private int SeleccionarCartaAleatoria(int excluir = -1, bool excluirCartasJugador = false)
     {
         var indicesDisponibles = Enumerable.Range(0, cartas.Length)
             .Where(i => !cartas[i].EstaEmparejada && !cartasVolteadas[i] && i != excluir)
             .ToList();
+
+        if (excluirCartasJugador)
+        {
+            indicesDisponibles.RemoveAll(i => i == cartasJugadorTurnoAnterior[0] || i == cartasJugadorTurnoAnterior[1]);
+        }
+
+        if (indicesDisponibles.Count == 0)
+        {
+            indicesDisponibles = Enumerable.Range(0, cartas.Length)
+                .Where(i => !cartas[i].EstaEmparejada && !cartasVolteadas[i] && i != excluir)
+                .ToList();
+        }
 
         if (indicesDisponibles.Count == 0) return -1;
 
@@ -332,8 +427,8 @@ public class JuegoMemoria : MonoBehaviour
 
     private IEnumerator PlayerDeath()
     {
-        blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
+        blackScreen.SetActive(true);
         PlayerPrefs.SetString("LastScene", "Juego_Memoria");
         SceneManager.LoadScene("MainScene");
     }
