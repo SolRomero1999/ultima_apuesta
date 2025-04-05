@@ -31,8 +31,8 @@ public class JuegoMemoria : MonoBehaviour
         "Pero viendo que es algo obvio solo jugaremos algo simple",
         "Un juego de memoria, con cartas",
         "Básicamente nos iremos turnando para voltear dos cartas",
-        "Si formas una pareja te quedas esas cartas",
-        "Si no lo son vuelves a voltearlas",
+        "Si formas una pareja te quedas esas cartas y vuelves a jugar",
+        "Si no lo son vuelves a voltearlas y pasa el turno",
         "Al final gana quien tenga más parejas"
     };
     
@@ -62,7 +62,8 @@ public class JuegoMemoria : MonoBehaviour
     private bool primerTurnoDealer = true;
     private int[] memoriaDealer = new int[6]; 
     private int indiceMemoria = 0;
-    private int[] cartasJugadorTurnoAnterior = new int[2] { -1, -1 }; 
+    private int[] cartasJugadorTurnoAnterior = new int[2] { -1, -1 };
+    private bool seguirMismoTurno = false;
     #endregion
 
     #region Unity Callbacks
@@ -204,6 +205,17 @@ public class JuegoMemoria : MonoBehaviour
             cartas[segundaCartaIndex].Emparejar();
             turnText.text = "¡Pareja encontrada!";
             LimpiarMemoria();
+            
+            // Verificar si quedan pares antes de continuar
+            if (QuedanParesPorEncontrar())
+            {
+                seguirMismoTurno = true;
+                StartCoroutine(DealerTurn());
+            }
+            else
+            {
+                FinalizarJuego();
+            }
         }
         else
         {
@@ -211,17 +223,16 @@ public class JuegoMemoria : MonoBehaviour
             yield return StartCoroutine(VoltearCartaAnimacion(primeraCartaIndex, false));
             yield return StartCoroutine(VoltearCartaAnimacion(segundaCartaIndex, false));
             turnText.text = "No fue pareja...";
-        }
-
-        yield return new WaitForSeconds(1f);
-
-        if (QuedanParesPorEncontrar())
-        {
-            StartCoroutine(PlayerTurn());
-        }
-        else
-        {
-            FinalizarJuego();
+            
+            if (QuedanParesPorEncontrar())
+            {
+                seguirMismoTurno = false;
+                StartCoroutine(PlayerTurn());
+            }
+            else
+            {
+                FinalizarJuego();
+            }
         }
     }
 
@@ -283,15 +294,19 @@ public class JuegoMemoria : MonoBehaviour
 
     private IEnumerator PlayerTurn()
     {
-        cartasJugadorTurnoAnterior[0] = -1;
-        cartasJugadorTurnoAnterior[1] = -1;
+        // Solo resetear las cartas del turno anterior si no estamos continuando el mismo turno
+        if (!seguirMismoTurno)
+        {
+            cartasJugadorTurnoAnterior[0] = -1;
+            cartasJugadorTurnoAnterior[1] = -1;
+        }
 
         esTurnoJugador = true;
         puedeSeleccionar = true;
         primeraCartaSeleccionada = null;
         segundaCartaSeleccionada = null;
         
-        turnText.text = "Tu turno";
+        turnText.text = seguirMismoTurno ? "¡Encontraste una pareja! Sigue jugando..." : "Tu turno";
         yield return new WaitForSeconds(0.5f);
     }
 
@@ -330,8 +345,19 @@ public class JuegoMemoria : MonoBehaviour
             UpdatePairsUI();
             primeraCartaSeleccionada.Emparejar();
             segundaCartaSeleccionada.Emparejar();
-            turnText.text = "Tienes suerte";
+            turnText.text = "¡Pareja encontrada!";
             LimpiarMemoria();
+            
+            // Verificar si quedan pares antes de continuar
+            if (QuedanParesPorEncontrar())
+            {
+                seguirMismoTurno = true;
+                StartCoroutine(PlayerTurn());
+            }
+            else
+            {
+                FinalizarJuego();
+            }
         }
         else
         {
@@ -340,18 +366,17 @@ public class JuegoMemoria : MonoBehaviour
             cartasVolteadas[System.Array.IndexOf(cartas, segundaCartaSeleccionada)] = false;
             primeraCartaSeleccionada.Voltear();
             segundaCartaSeleccionada.Voltear();
-            turnText.text = "Quizas la próxima...";
-        }
-
-        yield return new WaitForSeconds(1f);
-
-        if (QuedanParesPorEncontrar())
-        {
-            StartCoroutine(DealerTurn());
-        }
-        else
-        {
-            FinalizarJuego();
+            turnText.text = "No fue pareja...";
+            
+            if (QuedanParesPorEncontrar())
+            {
+                seguirMismoTurno = false;
+                StartCoroutine(DealerTurn());
+            }
+            else
+            {
+                FinalizarJuego();
+            }
         }
     }
 

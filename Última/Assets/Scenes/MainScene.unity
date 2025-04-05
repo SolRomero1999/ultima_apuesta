@@ -3217,7 +3217,7 @@ MonoBehaviour:
   dialogMessages:
   - "\xBFDeseas ver tu futuro?"
   dialogBackgrounds:
-  - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  - {fileID: 21300000, guid: 9e81f90b94463d748a8fef65f89d4e21, type: 3}
   - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
   showOnlyMessageStates: 0001
   isSpecialMessage: 0
