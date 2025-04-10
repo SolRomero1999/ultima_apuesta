@@ -205,8 +205,7 @@ public class JuegoMemoria : MonoBehaviour
             cartas[segundaCartaIndex].Emparejar();
             turnText.text = "¡Pareja encontrada!";
             LimpiarMemoria();
-            
-            // Verificar si quedan pares antes de continuar
+
             if (QuedanParesPorEncontrar())
             {
                 seguirMismoTurno = true;
@@ -294,7 +293,6 @@ public class JuegoMemoria : MonoBehaviour
 
     private IEnumerator PlayerTurn()
     {
-        // Solo resetear las cartas del turno anterior si no estamos continuando el mismo turno
         if (!seguirMismoTurno)
         {
             cartasJugadorTurnoAnterior[0] = -1;
@@ -348,7 +346,6 @@ public class JuegoMemoria : MonoBehaviour
             turnText.text = "¡Pareja encontrada!";
             LimpiarMemoria();
             
-            // Verificar si quedan pares antes de continuar
             if (QuedanParesPorEncontrar())
             {
                 seguirMismoTurno = true;

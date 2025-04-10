@@ -1517,15 +1517,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5060cfc6c35871e42b02a486076eb3a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scenesToLoad: []
+  scenesToLoad:
+  - Simon_Dice
   dialogPrefab: {fileID: 1802957815}
   dialogMessages:
-  - Vuelve en otro momento
+  - "\xBFYa es mi turno?"
   - Vuelve en otro momento
   dialogBackgrounds:
   - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
   - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
-  showOnlyMessageStates: 0101
+  showOnlyMessageStates: 0001
   isSpecialMessage: 0
   stateSprites:
   - {fileID: 21300000, guid: 440e1b0b99785c945890705ce8e9e14b, type: 3}

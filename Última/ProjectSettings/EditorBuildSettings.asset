@@ -21,6 +21,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Juego_Memoria.unity
     guid: be6bd9d4679992344be13f77cd47385c
   - enabled: 1
+    path: Assets/Scenes/Simon_Dice.unity
+    guid: 2ef001c8f7248ea478f326100fe42dcd
+  - enabled: 1
     path: Assets/Scenes/Ruleta_Rusa.unity
     guid: 84063f64f26957d43a1d8262664a993d
   - enabled: 1

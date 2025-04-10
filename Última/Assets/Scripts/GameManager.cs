@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
         "Traga_Monedas",
         "Par_Impar",
         "Juego_Memoria",
+        "Simon_Dice",
         "Ruleta_Rusa"
     };
 
