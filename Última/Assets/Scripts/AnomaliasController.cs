@@ -1,57 +1,204 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class AnomaliasController : MonoBehaviour
 {
-    [Header("Configuración de Anomalías")]
-    [SerializeField] private GameObject panelLuces;
-    [SerializeField] private float intervaloParpadeo = 0.5f;
-    [SerializeField] private int numeroParpadeos = 5;
-    [SerializeField] private float delayInicial = 1f;
+    #region Singleton Pattern
+    public static AnomaliasController Instance { get; private set; }
+    #endregion
+
+    #region Serialized Fields
+    [Header("Configuración de Parpadeo")]
+    [SerializeField] private Image blackScreen;
+    [SerializeField, Range(0.05f, 1f)] private float minBlinkInterval = 0.1f;
+    [SerializeField, Range(1f, 5f)] private float maxBlinkInterval = 3f;
+    [SerializeField, Range(0.01f, 0.5f)] private float minBlinkDuration = 0.05f;
+    [SerializeField, Range(0.1f, 1f)] private float maxBlinkDuration = 0.3f;
+    [SerializeField, Range(0f, 1f)] private float chanceForRapidBlinks = 0.3f;
+    [SerializeField, Range(1, 10)] private int maxAnomalias = 4;
+    #endregion
+
+    #region Private Variables
+    private int anomaliasCount = 0;
+    private Coroutine blinkingCoroutine;
+    private CanvasGroup canvasGroup;
+    #endregion
+
+    #region Unity Callbacks
+    private void Awake()
+    {
+        InitializeSingleton();
+        ConfigureCanvas();
+    }
 
     private void Start()
     {
-        StartCoroutine(VerificarAnomalias());
+        InitializeBlackScreen();
     }
 
-    IEnumerator VerificarAnomalias()
+    private void OnDestroy()
     {
-        yield return new WaitForSeconds(delayInicial);
+        CleanUpCoroutines();
+    }
+    #endregion
 
-        // Usamos la misma clave que en MainMenuController ("PreviousScene")
-        if (PlayerPrefs.HasKey("PreviousScene"))
+    #region Initialization
+    private void InitializeSingleton()
+    {
+        if (Instance == null)
         {
-            string escenaAnterior = PlayerPrefs.GetString("PreviousScene");
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+    }
+
+    private void ConfigureCanvas()
+    {
+        Canvas canvas = GetComponentInChildren<Canvas>();
+        if (canvas != null)
+        {
+            canvas.sortingOrder = 9999; // Valor muy alto para estar sobre todo
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
             
-            Debug.Log($"Escena anterior: {escenaAnterior}");
-
-            // Ignorar MainMenu y EndGame
-            if (escenaAnterior == "MainMenu" || escenaAnterior == "EndGame")
-            {
-                PlayerPrefs.DeleteKey("PreviousScene");
-                yield break;
-            }
-
-            // Solo activar si el jugador PERDIÓ (minijuego no completado)
-            if (!GameManager.Instance.IsMinigameCompleted(escenaAnterior))
-            {
-                StartCoroutine(EjecutarLucesParpadeantes());
-            }
-
-            PlayerPrefs.DeleteKey("PreviousScene");
+            // Añadir CanvasGroup para controlar la interactividad
+            canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
+            canvasGroup.blocksRaycasts = false; // Permite clicks a través del canvas
         }
     }
 
-    IEnumerator EjecutarLucesParpadeantes()
+    private void InitializeBlackScreen()
     {
-        if (panelLuces == null) yield break;
-
-        for (int i = 0; i < numeroParpadeos; i++)
+        if (blackScreen != null)
         {
-            panelLuces.SetActive(true);
-            yield return new WaitForSeconds(intervaloParpadeo);
-            panelLuces.SetActive(false);
-            yield return new WaitForSeconds(intervaloParpadeo);
+            blackScreen.gameObject.SetActive(false);
+            
+            // Configurar color semi-transparente
+            Color c = blackScreen.color;
+            c.a = 0.7f; // 70% de opacidad
+            blackScreen.color = c;
         }
     }
+    #endregion
+
+    #region Public Methods
+    public void AddAnomalia()
+    {
+        if (anomaliasCount < maxAnomalias)
+        {
+            anomaliasCount++;
+            UpdateAnomaliasState();
+        }
+    }
+
+    public void RemoveAnomalia()
+    {
+        if (anomaliasCount > 0)
+        {
+            anomaliasCount--;
+            UpdateAnomaliasState();
+        }
+    }
+
+    public int GetAnomaliasCount() => anomaliasCount;
+    #endregion
+
+    #region Private Methods
+    private void UpdateAnomaliasState()
+    {
+        if (anomaliasCount > 0)
+        {
+            if (blinkingCoroutine == null)
+            {
+                blinkingCoroutine = StartCoroutine(BlinkingLightsRoutine());
+            }
+        }
+        else
+        {
+            CleanUpCoroutines();
+        }
+    }
+
+    private void CleanUpCoroutines()
+    {
+        if (blinkingCoroutine != null)
+        {
+            StopCoroutine(blinkingCoroutine);
+            blinkingCoroutine = null;
+            
+            if (blackScreen != null)
+            {
+                blackScreen.gameObject.SetActive(false);
+            }
+        }
+    }
+    #endregion
+
+    #region Coroutines
+    private IEnumerator BlinkingLightsRoutine()
+    {
+        while (anomaliasCount > 0)
+        {
+            float waitTime = Random.Range(
+                minBlinkInterval, 
+                Mathf.Max(minBlinkInterval, maxBlinkInterval / anomaliasCount)
+            );
+            yield return new WaitForSeconds(waitTime);
+
+            if (blackScreen == null) yield break;
+
+            if (Random.value < chanceForRapidBlinks)
+            {
+                yield return ExecuteRapidBlinks();
+            }
+            else
+            {
+                yield return ExecuteSingleBlink();
+            }
+        }
+    }
+
+    private IEnumerator ExecuteRapidBlinks()
+    {
+        int rapidBlinks = Random.Range(2, 5);
+        for (int i = 0; i < rapidBlinks; i++)
+        {
+            yield return ToggleBlackScreen(true);
+            
+            float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
+            yield return new WaitForSeconds(blinkDuration);
+            
+            yield return ToggleBlackScreen(false);
+            
+            if (i < rapidBlinks - 1)
+            {
+                yield return new WaitForSeconds(Random.Range(0.05f, 0.2f));
+            }
+        }
+    }
+
+    private IEnumerator ExecuteSingleBlink()
+    {
+        yield return ToggleBlackScreen(true);
+        
+        float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
+        yield return new WaitForSeconds(blinkDuration);
+        
+        yield return ToggleBlackScreen(false);
+    }
+
+    private IEnumerator ToggleBlackScreen(bool state)
+    {
+        if (blackScreen != null)
+        {
+            blackScreen.gameObject.SetActive(state);
+        }
+        yield return null;
+    }
+    #endregion
 }

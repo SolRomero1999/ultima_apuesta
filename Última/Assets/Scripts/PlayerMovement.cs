@@ -157,7 +157,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void HandleCollision(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Limites"))
+        if (collision.gameObject.CompareTag("Wall") || collision.gameObject.CompareTag("Limite"))
         {
             StopMovement();
         }

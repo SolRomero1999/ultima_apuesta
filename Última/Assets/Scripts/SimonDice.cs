@@ -323,6 +323,10 @@ public class SimonDice : MonoBehaviour
         {
             GameManager.Instance.CompleteMinigame("SimonDice");
         }
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.RemoveAnomalia();
+        }
         PlayerPrefs.SetString("LastScene", "SimonDice");
         
         StartCoroutine(RegresarAMainScene());
@@ -338,6 +342,10 @@ public class SimonDice : MonoBehaviour
     private IEnumerator RegresarAMainScene()
     {
         yield return new WaitForSeconds(2f);
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.AddAnomalia();
+        }
         SceneManager.LoadScene("MainScene");
     }
     

@@ -368,6 +368,10 @@ public class RuletaRusa : MonoBehaviour
     {
         blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.AddAnomalia();
+        }
         PlayerPrefs.SetString("LastScene", "Ruleta_Rusa");
         SceneManager.LoadScene("MainScene");
     }
@@ -377,6 +381,10 @@ public class RuletaRusa : MonoBehaviour
         if (!isQuitting && GameManager.Instance != null)
         {
             GameManager.Instance.CompleteMinigame("Ruleta_Rusa");
+        }
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.RemoveAnomalia();
         }
         
         yield return new WaitForSeconds(2f);

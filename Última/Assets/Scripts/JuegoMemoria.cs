@@ -50,6 +50,7 @@ public class JuegoMemoria : MonoBehaviour
     #endregion
 
     #region Variables del Juego
+    private bool hasPlayedBefore = false;
     private int currentDialogueIndex = 0;
     private Carta[] cartas;
     private Carta primeraCartaSeleccionada;
@@ -76,6 +77,8 @@ public class JuegoMemoria : MonoBehaviour
     #region Inicialización
     private void InitializeGame()
     {
+        hasPlayedBefore = PlayerPrefs.GetInt("HasPlayedMemoriaBefore", 0) == 1;
+
         for (int i = 0; i < memoriaDealer.Length; i++)
         {
             memoriaDealer[i] = -1;
@@ -86,8 +89,19 @@ public class JuegoMemoria : MonoBehaviour
         turnPanel.SetActive(false);
         blackScreen.SetActive(false);
         rulesPanel.SetActive(true);
-        rulesText.text = introDialogue[currentDialogueIndex];
-        nextButton.onClick.AddListener(AdvanceDialogue);
+        
+        if (hasPlayedBefore)
+        {
+            rulesText.text = "Veamos tu futuro...";
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(StartGame);
+        }
+        else
+        {
+            rulesText.text = introDialogue[currentDialogueIndex];
+            nextButton.onClick.RemoveAllListeners();
+            nextButton.onClick.AddListener(AdvanceDialogue);
+        }
         
         playerPairsText.text = "Tus parejas: 0";
         dealerPairsText.text = "Mis parejas: 0";
@@ -105,6 +119,7 @@ public class JuegoMemoria : MonoBehaviour
         }
         else
         {
+            PlayerPrefs.SetInt("HasPlayedMemoriaBefore", 1);
             StartGame();
         }
     }
@@ -443,6 +458,10 @@ public class JuegoMemoria : MonoBehaviour
         {
             GameManager.Instance.CompleteMinigame("Juego_Memoria");
         }
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.RemoveAnomalia();
+        }
         PlayerPrefs.SetString("LastScene", "Juego_Memoria");
         SceneManager.LoadScene("MainScene");
     }
@@ -451,6 +470,10 @@ public class JuegoMemoria : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         blackScreen.SetActive(true);
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.AddAnomalia();
+        }
         PlayerPrefs.SetString("LastScene", "Juego_Memoria");
         SceneManager.LoadScene("MainScene");
     }

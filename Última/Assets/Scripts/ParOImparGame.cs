@@ -340,6 +340,10 @@ public class ParOImparGame : MonoBehaviour
             {
                 GameManager.Instance.CompleteMinigame("Par_Impar");
             }
+            if (AnomaliasController.Instance != null)
+            {
+                AnomaliasController.Instance.RemoveAnomalia();
+            }
             PlayerPrefs.SetString("LastScene", "Par_Impar");
             SceneManager.LoadScene("MainScene");
         }
@@ -353,6 +357,10 @@ public class ParOImparGame : MonoBehaviour
     {
         blackScreen.SetActive(true);
         yield return new WaitForSeconds(2f);
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.AddAnomalia();
+        }
         PlayerPrefs.SetString("LastScene", "Par_Impar");
         SceneManager.LoadScene("MainScene");
     }
