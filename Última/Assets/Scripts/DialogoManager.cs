@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
 
 public class DialogManager : MonoBehaviour
 {
@@ -13,12 +14,18 @@ public class DialogManager : MonoBehaviour
     [SerializeField] private GameObject secondBartenderDialogPrefab;
     [SerializeField] private GameObject choiceDialogPrefab;
 
+    [Header("Text Settings")]
+    [SerializeField] private float textSpeed = 0.05f; // Velocidad de escritura del texto
+
     private GameObject currentDialogInstance;
     private Button currentButton;
     private int currentLineIndex = 0;
     private bool isPostRuleta = false;
     private DialogLine[] currentDialogLines;
     private PlayerMovement cachedPlayerMovement;
+    private Coroutine typingCoroutine;
+    private bool isTyping = false;
+    private TMP_Text currentMessageText;
 
     private struct DialogLine
     {
@@ -37,6 +44,11 @@ public class DialogManager : MonoBehaviour
         if (currentButton != null)
         {
             currentButton.onClick.RemoveAllListeners();
+        }
+        
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
         }
     }
 
@@ -153,6 +165,13 @@ public class DialogManager : MonoBehaviour
 
     private void ShowNextDialog()
     {
+        // Si está escribiendo, completar el texto inmediatamente
+        if (isTyping)
+        {
+            CompleteText();
+            return;
+        }
+
         if (currentLineIndex >= currentDialogLines.Length)
         {
             HandleDialogEnd();
@@ -167,6 +186,14 @@ public class DialogManager : MonoBehaviour
 
     private void CleanupCurrentDialog()
     {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        isTyping = false;
+
         if (currentDialogInstance != null)
         {
             Destroy(currentDialogInstance);
@@ -186,23 +213,51 @@ public class DialogManager : MonoBehaviour
         currentDialogInstance.transform.SetParent(GetCanvasTransform(), false);
         currentDialogInstance.SetActive(true);
 
-        SetDialogText(currentDialogInstance, dialogLine.text);
+        currentMessageText = currentDialogInstance.GetComponentInChildren<TMP_Text>();
+        if (currentMessageText != null)
+        {
+            typingCoroutine = StartCoroutine(TypeText(dialogLine.text));
+        }
+
         SetupDialogButton(currentDialogInstance);
+    }
+
+    private IEnumerator TypeText(string text)
+    {
+        isTyping = true;
+        currentMessageText.text = "";
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            currentMessageText.text += letter;
+            yield return new WaitForSeconds(textSpeed);
+        }
+        
+        isTyping = false;
+        typingCoroutine = null;
+    }
+
+    private void CompleteText()
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        if (currentMessageText != null && currentLineIndex > 0)
+        {
+            // Mostrar el texto completo de la línea actual
+            currentMessageText.text = currentDialogLines[currentLineIndex - 1].text;
+        }
+
+        isTyping = false;
     }
 
     private Transform GetCanvasTransform()
     {
         GameObject canvas = GameObject.Find("Canvas");
         return canvas != null ? canvas.transform : null;
-    }
-
-    private void SetDialogText(GameObject dialogInstance, string text)
-    {
-        TMP_Text messageText = dialogInstance.GetComponentInChildren<TMP_Text>();
-        if (messageText != null)
-        {
-            messageText.text = text;
-        }
     }
 
     private void SetupDialogButton(GameObject dialogInstance)
@@ -238,7 +293,11 @@ public class DialogManager : MonoBehaviour
         currentDialogInstance.transform.SetParent(GetCanvasTransform(), false);
         currentDialogInstance.SetActive(true);
 
-        SetDialogText(currentDialogInstance, "¿Qué prefieres?");
+        currentMessageText = currentDialogInstance.GetComponentInChildren<TMP_Text>();
+        if (currentMessageText != null)
+        {
+            currentMessageText.text = "¿Qué prefieres?";
+        }
 
         Button reencarnarButton = currentDialogInstance.transform.Find("ReencarnarButton")?.GetComponent<Button>();
         Button juezButton = currentDialogInstance.transform.Find("JuezButton")?.GetComponent<Button>();

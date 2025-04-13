@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 
 public class AnomaliasController : MonoBehaviour
@@ -10,7 +9,7 @@ public class AnomaliasController : MonoBehaviour
 
     #region Serialized Fields
     [Header("Configuración de Parpadeo")]
-    [SerializeField] private Image blackScreen;
+    [SerializeField] private SpriteRenderer blinkSprite;
     [SerializeField, Range(0.05f, 1f)] private float minBlinkInterval = 0.1f;
     [SerializeField, Range(1f, 5f)] private float maxBlinkInterval = 3f;
     [SerializeField, Range(0.01f, 0.5f)] private float minBlinkDuration = 0.05f;
@@ -22,19 +21,17 @@ public class AnomaliasController : MonoBehaviour
     #region Private Variables
     private int anomaliasCount = 0;
     private Coroutine blinkingCoroutine;
-    private CanvasGroup canvasGroup;
     #endregion
 
     #region Unity Callbacks
     private void Awake()
     {
         InitializeSingleton();
-        ConfigureCanvas();
     }
 
     private void Start()
     {
-        InitializeBlackScreen();
+        InitializeBlinkSprite();
     }
 
     private void OnDestroy()
@@ -58,30 +55,18 @@ public class AnomaliasController : MonoBehaviour
         }
     }
 
-    private void ConfigureCanvas()
+    private void InitializeBlinkSprite()
     {
-        Canvas canvas = GetComponentInChildren<Canvas>();
-        if (canvas != null)
+        if (blinkSprite != null)
         {
-            canvas.sortingOrder = 9999; // Valor muy alto para estar sobre todo
-            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            
-            // Añadir CanvasGroup para controlar la interactividad
-            canvasGroup = canvas.gameObject.AddComponent<CanvasGroup>();
-            canvasGroup.blocksRaycasts = false; // Permite clicks a través del canvas
-        }
-    }
-
-    private void InitializeBlackScreen()
-    {
-        if (blackScreen != null)
-        {
-            blackScreen.gameObject.SetActive(false);
+            blinkSprite.enabled = false;
             
             // Configurar color semi-transparente
-            Color c = blackScreen.color;
+            Color c = blinkSprite.color;
             c.a = 0.7f; // 70% de opacidad
-            blackScreen.color = c;
+            blinkSprite.color = c;
+            
+            // Mantiene la posición y escala que hayas asignado en el editor
         }
     }
     #endregion
@@ -131,9 +116,9 @@ public class AnomaliasController : MonoBehaviour
             StopCoroutine(blinkingCoroutine);
             blinkingCoroutine = null;
             
-            if (blackScreen != null)
+            if (blinkSprite != null)
             {
-                blackScreen.gameObject.SetActive(false);
+                blinkSprite.enabled = false;
             }
         }
     }
@@ -150,7 +135,7 @@ public class AnomaliasController : MonoBehaviour
             );
             yield return new WaitForSeconds(waitTime);
 
-            if (blackScreen == null) yield break;
+            if (blinkSprite == null) yield break;
 
             if (Random.value < chanceForRapidBlinks)
             {
@@ -168,12 +153,12 @@ public class AnomaliasController : MonoBehaviour
         int rapidBlinks = Random.Range(2, 5);
         for (int i = 0; i < rapidBlinks; i++)
         {
-            yield return ToggleBlackScreen(true);
+            yield return ToggleBlinkSprite(true);
             
             float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
             yield return new WaitForSeconds(blinkDuration);
             
-            yield return ToggleBlackScreen(false);
+            yield return ToggleBlinkSprite(false);
             
             if (i < rapidBlinks - 1)
             {
@@ -184,19 +169,19 @@ public class AnomaliasController : MonoBehaviour
 
     private IEnumerator ExecuteSingleBlink()
     {
-        yield return ToggleBlackScreen(true);
+        yield return ToggleBlinkSprite(true);
         
         float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
         yield return new WaitForSeconds(blinkDuration);
         
-        yield return ToggleBlackScreen(false);
+        yield return ToggleBlinkSprite(false);
     }
 
-    private IEnumerator ToggleBlackScreen(bool state)
+    private IEnumerator ToggleBlinkSprite(bool state)
     {
-        if (blackScreen != null)
+        if (blinkSprite != null)
         {
-            blackScreen.gameObject.SetActive(state);
+            blinkSprite.enabled = state;
         }
         yield return null;
     }

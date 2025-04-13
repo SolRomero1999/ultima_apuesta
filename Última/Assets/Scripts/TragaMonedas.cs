@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class TragaMonedas : MonoBehaviour
 {
@@ -34,13 +35,22 @@ public class TragaMonedas : MonoBehaviour
     [SerializeField] private float initialSpinSpeed = 0.05f;
     [SerializeField] private float finalSpinSpeed = 0.2f;
     [SerializeField] private float winDelay = 0.5f; 
-    [SerializeField] private float resultDisplayTime = 1.5f; 
+    [SerializeField] private float resultDisplayTime = 1.5f;
+    [SerializeField] private float textSpeed = 0.05f;
     #endregion
 
     #region Configuración Dificultad
     [Header("Configuración Dificultad")]
     [Range(0, 100)] [SerializeField] private int probabilidadGanar = 15;
     [Range(0, 100)] [SerializeField] private int probabilidadMensajeDerrota = 50;
+    #endregion
+
+    #region Efectos de Sonido
+    [Header("Efectos de Sonido")]
+    [SerializeField] private AudioClip leverPullSound;
+    [SerializeField] private AudioClip slotSpinSound;
+    [SerializeField] private AudioClip winSound;
+    [SerializeField] private AudioSource audioSource;
     #endregion
 
     #region Variables Privadas
@@ -63,6 +73,9 @@ public class TragaMonedas : MonoBehaviour
     private int currentDialogueIndex = 0;
     private bool isSpinning = false;
     private Coroutine spinCoroutine;
+    private Coroutine typingCoroutine;
+    private bool isTyping = false;
+    private bool skipTyping = false;
     #endregion
 
     #region Unity Callbacks
@@ -82,12 +95,13 @@ public class TragaMonedas : MonoBehaviour
     {
         SetupEventListeners();
         ConfigureInitialUI();
+        ConfigureAudioSource();
     }
 
     private void SetupEventListeners()
     {
         leverButton.onClick.AddListener(PullLever);
-        startButton.onClick.AddListener(AdvanceDialogue);
+        startButton.onClick.AddListener(OnDialogueClick);
     }
 
     private void ConfigureInitialUI()
@@ -95,23 +109,70 @@ public class TragaMonedas : MonoBehaviour
         rulesPanel.SetActive(true);
         leverButton.gameObject.SetActive(false);
         winPanel.SetActive(false);
-        rulesText.text = rulesDialogue[currentDialogueIndex];
+        StartTypingDialogue(rulesDialogue[currentDialogueIndex]);
+    }
+
+    private void ConfigureAudioSource()
+    {
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
+            audioSource.loop = false;
+        }
     }
     #endregion
 
     #region Manejo de Diálogos
-    private void AdvanceDialogue()
+    private void OnDialogueClick()
     {
+        if (isTyping && !skipTyping)
+        {
+            skipTyping = true;
+            return;
+        }
+
+        skipTyping = false;
         currentDialogueIndex++;
         
         if (currentDialogueIndex < rulesDialogue.Length)
         {
-            rulesText.text = rulesDialogue[currentDialogueIndex];
+            StartTypingDialogue(rulesDialogue[currentDialogueIndex]);
         }
         else
         {
             StartGame();
         }
+    }
+
+    private void StartTypingDialogue(string text)
+    {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+        }
+        typingCoroutine = StartCoroutine(TypeDialogueText(text));
+    }
+
+    private IEnumerator TypeDialogueText(string text)
+    {
+        isTyping = true;
+        rulesText.text = "";
+        skipTyping = false;
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            if (skipTyping)
+            {
+                rulesText.text = text;
+                break;
+            }
+            
+            rulesText.text += letter;
+            yield return new WaitForSeconds(textSpeed);
+        }
+        
+        isTyping = false;
     }
     #endregion
 
@@ -145,6 +206,8 @@ public class TragaMonedas : MonoBehaviour
     {
         if (!isSpinning)
         {
+            PlayLeverSound();
+            
             if (spinCoroutine != null)
             {
                 StopCoroutine(spinCoroutine);
@@ -189,6 +252,8 @@ public class TragaMonedas : MonoBehaviour
             victoriaPreparada = true;
         }
 
+        PlaySpinSound();
+
         while (elapsedTime < totalSpinTime)
         {
             float progress = elapsedTime / totalSpinTime;
@@ -220,6 +285,7 @@ public class TragaMonedas : MonoBehaviour
         
         if (win)
         {
+            PlayWinSound();
             winText.text = "Bien, puedes ir al siguiente juego";
             winPanel.SetActive(true); 
             
@@ -252,6 +318,32 @@ public class TragaMonedas : MonoBehaviour
     }
     #endregion
 
+    #region Manejo de Sonido
+    private void PlayLeverSound()
+    {
+        if (leverPullSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(leverPullSound);
+        }
+    }
+
+    private void PlaySpinSound()
+    {
+        if (slotSpinSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(slotSpinSound);
+        }
+    }
+
+    private void PlayWinSound()
+    {
+        if (winSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(winSound);
+        }
+    }
+    #endregion
+
     #region Limpieza
     private void CleanUp()
     {
@@ -263,6 +355,9 @@ public class TragaMonedas : MonoBehaviour
             
         if (spinCoroutine != null)
             StopCoroutine(spinCoroutine);
+            
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
     }
     #endregion
 }
