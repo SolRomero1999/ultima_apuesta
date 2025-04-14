@@ -11,11 +11,16 @@ public class SimonDice : MonoBehaviour
     [Header("Referencias Visuales")]
     [SerializeField] private Image[] telefonos;
     [SerializeField] private Image dealer;
+    [SerializeField] private Sprite dealerReglas;
+    [SerializeField] private Sprite dealerJuego;
+    [SerializeField] private Sprite dealerLose;
+    [SerializeField] private GameObject blackScreen;
     
     [Header("Configuración de Tiempo")]
     [SerializeField] private float tiempoEntreLlamadas = 0.8f;
     [SerializeField] private float tiempoIluminado = 0.5f;
     [SerializeField] private float tiempoMensaje = 1f;
+    [SerializeField] private float textSpeed = 0.05f;
     
     [Header("Configuración de Sonido")]
     [SerializeField] private AudioClip sonidoDealer;
@@ -45,10 +50,13 @@ public class SimonDice : MonoBehaviour
     private bool juegoActivo = false;
     private bool primeraVez = true;
     private bool mostrandoSonidos = false;
+    private bool isTyping = false;
+    private bool skipTyping = false;
     
     private Coroutine mostrarSecuenciaCoroutine;
     private Coroutine mostrarSonidosCoroutine;
     private Coroutine mostrarMensajeCoroutine;
+    private Coroutine typingCoroutine;
     
     private readonly string[] dialogoInicial = {
         "Al fin es mi turno de jugar contigo",
@@ -63,6 +71,18 @@ public class SimonDice : MonoBehaviour
     private readonly string[] dialogoRecordatorio = {
         "Te refrescare la memoria, así suena cada teléfono",
         "Bien, ahora empecemos"
+    };
+
+    private readonly string[] mensajesVictoria = {
+        "¡Bien hecho! Has completado el juego",
+        "¡Impresionante! Has ganado",
+        "La suerte estuvo de tu lado esta vez"
+    };
+
+    private readonly string[] mensajesDerrota = {
+        "Una lástima, te veo pronto",
+        "No fue suficiente esta vez",
+        "Mejor suerte para la próxima"
     };
     
     #endregion
@@ -81,6 +101,8 @@ public class SimonDice : MonoBehaviour
         
         InicializarUI();
         ApagarTodosTelefonos();
+        dealer.sprite = dealerReglas;
+        blackScreen.SetActive(false);
     }
 
     private void OnDestroy()
@@ -95,9 +117,18 @@ public class SimonDice : MonoBehaviour
     
     private void InicializarUI()
     {
-        rulesText.text = primeraVez ? dialogoInicial[0] : dialogoRecordatorio[0];
+        rulesText.text = "";
         rulesPanel.SetActive(true);
         gameOverPanel.SetActive(false);
+        
+        if (primeraVez)
+        {
+            StartCoroutine(TypeDialogueText(dialogoInicial[0]));
+        }
+        else
+        {
+            StartCoroutine(TypeDialogueText(dialogoRecordatorio[0]));
+        }
     }
 
     private void ApagarTodosTelefonos()
@@ -116,6 +147,7 @@ public class SimonDice : MonoBehaviour
     
     private void IniciarJuego()
     {
+        dealer.sprite = dealerJuego;
         juegoActivo = true;
         nivel = 3;
         GenerarSecuencia();
@@ -226,6 +258,63 @@ public class SimonDice : MonoBehaviour
     
     #endregion
 
+    #region Finalización del Juego
+    
+#region Finalización del Juego
+
+    private void GanarJuego()
+    {
+        juegoActivo = false;
+        string mensaje = mensajesVictoria[Random.Range(0, mensajesVictoria.Length)];
+        MostrarMensajeTemporal(mensaje);
+        
+        StartCoroutine(GanarJuegoCoroutine());
+    }
+
+    private IEnumerator GanarJuegoCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.CompleteMinigame("Simon_Dice");
+        }
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.RemoveAnomalia();
+        }
+        PlayerPrefs.SetString("LastScene", "Simon_Dice");
+        SceneManager.LoadScene("MainScene");
+    }
+
+    private void PerderJuego()
+    {
+        juegoActivo = false;
+        dealer.sprite = dealerLose;
+        string mensaje = mensajesDerrota[Random.Range(0, mensajesDerrota.Length)];
+        MostrarMensajeTemporal(mensaje);
+        
+        StartCoroutine(PerderJuegoCoroutine());
+    }
+
+    private IEnumerator PerderJuegoCoroutine()
+    {
+        yield return new WaitForSeconds(2f);
+        blackScreen.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        
+        if (AnomaliasController.Instance != null)
+        {
+            AnomaliasController.Instance.AddAnomalia();
+        }
+        PlayerPrefs.SetString("LastScene", "Simon_Dice");
+        SceneManager.LoadScene("MainScene");
+    }
+
+#endregion
+
+    #endregion
+
     #region Manejo de UI
     
     private void MostrarMensajeTemporal(string mensaje)
@@ -262,8 +351,13 @@ public class SimonDice : MonoBehaviour
 
     private void AdvanceDialogue()
     {
-        if (mostrandoSonidos) return;
+        if (isTyping && !skipTyping)
+        {
+            skipTyping = true;
+            return;
+        }
 
+        skipTyping = false;
         currentDialogueIndex++;
         
         if (primeraVez)
@@ -276,17 +370,38 @@ public class SimonDice : MonoBehaviour
         }
     }
 
+    private IEnumerator TypeDialogueText(string text)
+    {
+        isTyping = true;
+        rulesText.text = "";
+        skipTyping = false;
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            if (skipTyping)
+            {
+                rulesText.text = text;
+                break;
+            }
+            
+            rulesText.text += letter;
+            yield return new WaitForSeconds(textSpeed);
+        }
+        
+        isTyping = false;
+    }
+
     private void ManejarDialogoInicial()
     {
         if (currentDialogueIndex < dialogoInicial.Length - 1)
         {
-            rulesText.text = dialogoInicial[currentDialogueIndex];
+            StartCoroutine(TypeDialogueText(dialogoInicial[currentDialogueIndex]));
         }
         else if (currentDialogueIndex == dialogoInicial.Length - 1)
         {
+            StartCoroutine(TypeDialogueText(dialogoInicial[currentDialogueIndex]));
             DetenerCoroutine(ref mostrarSonidosCoroutine);
             mostrarSonidosCoroutine = StartCoroutine(MostrarSonidosTelefonos());
-            rulesText.text = dialogoInicial[currentDialogueIndex];
         }
         else
         {
@@ -299,54 +414,15 @@ public class SimonDice : MonoBehaviour
     {
         if (currentDialogueIndex == 1)
         {
+            StartCoroutine(TypeDialogueText(dialogoRecordatorio[currentDialogueIndex]));
             DetenerCoroutine(ref mostrarSonidosCoroutine);
             mostrarSonidosCoroutine = StartCoroutine(MostrarSonidosTelefonos());
-            rulesText.text = dialogoRecordatorio[currentDialogueIndex];
         }
         else if (currentDialogueIndex > 1)
         {
             rulesPanel.SetActive(false);
             IniciarJuego();
         }
-    }
-    
-    #endregion
-
-    #region Finalización del Juego
-    
-    private void GanarJuego()
-    {
-        juegoActivo = false;
-        MostrarMensajeTemporal("¡Bien hecho! Has completado el juego.");
-        
-        if (GameManager.Instance != null)
-        {
-            GameManager.Instance.CompleteMinigame("SimonDice");
-        }
-        if (AnomaliasController.Instance != null)
-        {
-            AnomaliasController.Instance.RemoveAnomalia();
-        }
-        PlayerPrefs.SetString("LastScene", "SimonDice");
-        
-        StartCoroutine(RegresarAMainScene());
-    }
-
-    private void PerderJuego()
-    {
-        juegoActivo = false;
-        MostrarMensajeTemporal("Una lástima, te veo pronto");
-        StartCoroutine(RegresarAMainScene());
-    }
-
-    private IEnumerator RegresarAMainScene()
-    {
-        yield return new WaitForSeconds(2f);
-        if (AnomaliasController.Instance != null)
-        {
-            AnomaliasController.Instance.AddAnomalia();
-        }
-        SceneManager.LoadScene("MainScene");
     }
     
     #endregion
@@ -358,6 +434,7 @@ public class SimonDice : MonoBehaviour
         DetenerCoroutine(ref mostrarSecuenciaCoroutine);
         DetenerCoroutine(ref mostrarSonidosCoroutine);
         DetenerCoroutine(ref mostrarMensajeCoroutine);
+        DetenerCoroutine(ref typingCoroutine);
     }
 
     private void DetenerCoroutine(ref Coroutine coroutine)

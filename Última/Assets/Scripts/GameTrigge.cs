@@ -18,6 +18,8 @@ public class GameTrigger : MonoBehaviour
     
     [Header("Special Message")]
     [SerializeField] private bool isSpecialMessage = false;
+    [SerializeField] private Animator specialAnimator;
+    [SerializeField] private string specialAnimationTrigger;
 
     [Header("Visual Settings")]
     [SerializeField] private Sprite[] stateSprites = new Sprite[3];
@@ -181,7 +183,7 @@ public class GameTrigger : MonoBehaviour
     private void SetupSpecialDialog(TMP_Text text, Button yesBtn, Button noBtn, Button clearBtn)
     {
         text.text = GetCurrentMessage();
-        SetupButton(yesBtn, OnYesClicked);
+        SetupButton(yesBtn, OnSpecialYesClicked);
         SetupButton(noBtn, CloseDialog);
         SetButtonActive(clearBtn, false);
     }
@@ -260,6 +262,30 @@ public class GameTrigger : MonoBehaviour
             SceneManager.LoadScene(scene);
         }
         CloseDialog();
+    }
+
+    private void OnSpecialYesClicked()
+    {
+        // Reproducir animación si está configurada
+        if (specialAnimator != null && !string.IsNullOrEmpty(specialAnimationTrigger))
+        {
+            specialAnimator.SetTrigger(specialAnimationTrigger);
+        }
+        
+        // Cerrar el diálogo inmediatamente
+        CloseDialog();
+        
+        // Cargar la escena después de 1 segundo
+        Invoke("LoadSceneAfterAnimation", 1f);
+    }
+
+    private void LoadSceneAfterAnimation()
+    {
+        string scene = GetCurrentScene();
+        if (!string.IsNullOrEmpty(scene))
+        {
+            SceneManager.LoadScene(scene);
+        }
     }
 
     private void CloseDialog()

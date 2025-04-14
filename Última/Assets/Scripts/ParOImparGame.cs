@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class ParOImparGame : MonoBehaviour
 {
+    #region UI Components
     public GameObject rulesPanel; 
     public Button startButton;   
     public TMP_Text rulesText; 
@@ -22,21 +23,35 @@ public class ParOImparGame : MonoBehaviour
     public Image backgroundImage; 
     public GameObject blackScreen; 
     public GameObject dialoguePanel; 
+    #endregion
+
+    #region Sprites
     public Sprite imgInicial;        
     public Sprite imgDealerPensando;      
     public Sprite imgDealerApostando;   
     public Sprite imgPlayerApostando;   
+    #endregion
+
+    #region Audio
     public AudioSource audioSource;     
     public AudioClip RisaClip;   
     public AudioClip QuejidoClip;   
+    #endregion
 
+    #region Game Variables
     private int playerTeeth = 10;  
     private int dealerTeeth = 10;  
     private int dealerNumber;      
     private int betAmount = 1;     
     private bool gameOver = false;  
     private bool isFirstTurn = true; 
-    
+    private bool isTyping = false;
+    private bool skipTyping = false;
+    private int currentDialogueIndex = 0;
+    private bool hasPlayedBefore = false;
+    #endregion
+
+    #region Dialogue
     private string[] rulesDialogue = new string[]
     {
         "Te explicaré el juego",
@@ -48,9 +63,9 @@ public class ParOImparGame : MonoBehaviour
         "No es difícil, tranquilo",
         "Ganará el que llegue a 20 dientes primero"
     };
-    private int currentDialogueIndex = 0;
-    private bool hasPlayedBefore = false;
+    #endregion
 
+    #region Unity Callbacks
     void Start()
     {
         hasPlayedBefore = PlayerPrefs.GetInt("HasPlayedParImparBefore", 0) == 1;
@@ -74,23 +89,33 @@ public class ParOImparGame : MonoBehaviour
         }
         else
         {
-            rulesText.text = rulesDialogue[currentDialogueIndex];
+            rulesText.text = "";
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(AdvanceDialogue);
+            StartCoroutine(TypeDialogueText(rulesDialogue[currentDialogueIndex]));
         }
         
         increaseBetButton.onClick.AddListener(IncreaseBet);
         decreaseBetButton.onClick.AddListener(DecreaseBet);
         betButton.onClick.AddListener(() => StartCoroutine(MakeBetCoroutine()));
     }
+    #endregion
 
+    #region Dialogue System
     void AdvanceDialogue()
     {
+        if (isTyping && !skipTyping)
+        {
+            skipTyping = true;
+            return;
+        }
+
+        skipTyping = false;
         currentDialogueIndex++;
         
         if (currentDialogueIndex < rulesDialogue.Length)
         {
-            rulesText.text = rulesDialogue[currentDialogueIndex];
+            StartCoroutine(TypeDialogueText(rulesDialogue[currentDialogueIndex]));
         }
         else
         {
@@ -99,6 +124,29 @@ public class ParOImparGame : MonoBehaviour
         }
     }
 
+    private IEnumerator TypeDialogueText(string text)
+    {
+        isTyping = true;
+        rulesText.text = "";
+        skipTyping = false;
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            if (skipTyping)
+            {
+                rulesText.text = text;
+                break;
+            }
+            
+            rulesText.text += letter;
+            yield return new WaitForSeconds(0.05f);
+        }
+        
+        isTyping = false;
+    }
+    #endregion
+
+    #region Game Flow
     void StartGame()
     {
         rulesPanel.SetActive(false); 
@@ -147,6 +195,25 @@ public class ParOImparGame : MonoBehaviour
         imparButton.onClick.AddListener(() => StartCoroutine(PlayerChoiceCoroutine(false)));
     }
 
+    IEnumerator PlayerTurn()
+    {
+        if (gameOver) yield break;
+
+        dealerText.text = "Es tu turno. Elige cuántos dientes quieres apostar.";
+        backgroundImage.sprite = imgInicial; 
+        yield return new WaitForSeconds(2f);
+
+        betPanel.SetActive(true);
+        betAmount = 1;
+        betAmountText.text = betAmount.ToString();
+
+        increaseBetButton.gameObject.SetActive(true);
+        decreaseBetButton.gameObject.SetActive(true);
+        betButton.gameObject.SetActive(true);
+    }
+    #endregion
+
+    #region Player Choices
     IEnumerator PlayerChoiceCoroutine(bool chosePar)
     {
         if (gameOver) yield break;
@@ -212,23 +279,6 @@ public class ParOImparGame : MonoBehaviour
         imparButton.gameObject.SetActive(false);
     }
 
-    IEnumerator PlayerTurn()
-    {
-        if (gameOver) yield break;
-
-        dealerText.text = "Es tu turno. Elige cuántos dientes quieres apostar.";
-        backgroundImage.sprite = imgInicial; 
-        yield return new WaitForSeconds(2f);
-
-        betPanel.SetActive(true);
-        betAmount = 1;
-        betAmountText.text = betAmount.ToString();
-
-        increaseBetButton.gameObject.SetActive(true);
-        decreaseBetButton.gameObject.SetActive(true);
-        betButton.gameObject.SetActive(true);
-    }
-
     void IncreaseBet()
     {
         if (betAmount < Mathf.Min(10, playerTeeth, dealerTeeth))
@@ -272,7 +322,9 @@ public class ParOImparGame : MonoBehaviour
         yield return new WaitForSeconds(2f);
         yield return StartCoroutine(WaitAndShowResult(dealerGuess));
     }
+    #endregion
 
+    #region Game Results
     IEnumerator WaitAndShowResult(bool dealerGuess)
     {
         yield return new WaitForSeconds(2f);
@@ -364,4 +416,5 @@ public class ParOImparGame : MonoBehaviour
         PlayerPrefs.SetString("LastScene", "Par_Impar");
         SceneManager.LoadScene("MainScene");
     }
+    #endregion
 }

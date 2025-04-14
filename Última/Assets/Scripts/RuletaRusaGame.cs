@@ -45,6 +45,8 @@ public class RuletaRusa : MonoBehaviour
     private bool esTurnoDelJugador = false;
     private bool isQuitting = false;
     private bool buttonsBlocked = false;
+    private bool isTyping = false;
+    private bool skipTyping = false;
     
     private string[] rulesDialogue = new string[]
     {
@@ -59,6 +61,7 @@ public class RuletaRusa : MonoBehaviour
     };
     private int currentDialogueIndex = 0;
     private bool hasPlayedBefore = false;
+    private Coroutine typingCoroutine;
     #endregion
 
     #region Unity Lifecycle Methods
@@ -113,9 +116,10 @@ public class RuletaRusa : MonoBehaviour
         }
         else
         {
-            rulesText.text = rulesDialogue[currentDialogueIndex];
+            rulesText.text = "";
             startButton.onClick.RemoveAllListeners();
             startButton.onClick.AddListener(AdvanceDialogue);
+            StartCoroutine(TypeDialogueText(rulesDialogue[currentDialogueIndex]));
         }
     }
 
@@ -162,17 +166,45 @@ public class RuletaRusa : MonoBehaviour
     #region Game Flow
     private void AdvanceDialogue()
     {
+        if (isTyping && !skipTyping)
+        {
+            skipTyping = true;
+            return;
+        }
+
+        skipTyping = false;
         currentDialogueIndex++;
         
         if (currentDialogueIndex < rulesDialogue.Length)
         {
-            rulesText.text = rulesDialogue[currentDialogueIndex];
+            StartCoroutine(TypeDialogueText(rulesDialogue[currentDialogueIndex]));
         }
         else
         {
             PlayerPrefs.SetInt("HasPlayedRuletaRusaBefore", 1);
             StartGame();
         }
+    }
+
+    private IEnumerator TypeDialogueText(string text)
+    {
+        isTyping = true;
+        rulesText.text = "";
+        skipTyping = false;
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            if (skipTyping)
+            {
+                rulesText.text = text;
+                break;
+            }
+            
+            rulesText.text += letter;
+            yield return new WaitForSeconds(0.05f);
+        }
+        
+        isTyping = false;
     }
 
     private void StartGame()

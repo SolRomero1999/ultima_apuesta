@@ -65,6 +65,8 @@ public class JuegoMemoria : MonoBehaviour
     private int indiceMemoria = 0;
     private int[] cartasJugadorTurnoAnterior = new int[2] { -1, -1 };
     private bool seguirMismoTurno = false;
+    private bool isTyping = false;
+    private bool skipTyping = false;
     #endregion
 
     #region Unity Callbacks
@@ -98,9 +100,10 @@ public class JuegoMemoria : MonoBehaviour
         }
         else
         {
-            rulesText.text = introDialogue[currentDialogueIndex];
+            rulesText.text = "";
             nextButton.onClick.RemoveAllListeners();
             nextButton.onClick.AddListener(AdvanceDialogue);
+            StartCoroutine(TypeDialogueText(introDialogue[currentDialogueIndex]));
         }
         
         playerPairsText.text = "Tus parejas: 0";
@@ -111,17 +114,45 @@ public class JuegoMemoria : MonoBehaviour
     #region Manejo de Diálogos
     private void AdvanceDialogue()
     {
+        if (isTyping && !skipTyping)
+        {
+            skipTyping = true;
+            return;
+        }
+
+        skipTyping = false;
         currentDialogueIndex++;
         
         if (currentDialogueIndex < introDialogue.Length)
         {
-            rulesText.text = introDialogue[currentDialogueIndex];
+            StartCoroutine(TypeDialogueText(introDialogue[currentDialogueIndex]));
         }
         else
         {
             PlayerPrefs.SetInt("HasPlayedMemoriaBefore", 1);
             StartGame();
         }
+    }
+
+    private IEnumerator TypeDialogueText(string text)
+    {
+        isTyping = true;
+        rulesText.text = "";
+        skipTyping = false;
+        
+        foreach (char letter in text.ToCharArray())
+        {
+            if (skipTyping)
+            {
+                rulesText.text = text;
+                break;
+            }
+            
+            rulesText.text += letter;
+            yield return new WaitForSeconds(0.05f);
+        }
+        
+        isTyping = false;
     }
     #endregion
 
