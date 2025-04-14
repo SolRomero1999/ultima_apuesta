@@ -35,7 +35,6 @@ public class ParOImparGame : MonoBehaviour
     #region Audio
     public AudioSource audioSource;     
     public AudioClip RisaClip;   
-    public AudioClip QuejidoClip;   
     #endregion
 
     #region Game Variables
@@ -237,10 +236,12 @@ public class ParOImparGame : MonoBehaviour
             
             if(dealerNumber == 1)
             {
+                audioSource.PlayOneShot(RisaClip);
                 dealerText.text = "¡Ups! Fallaste, era 1 diente.";
             }
             else
             {
+                audioSource.PlayOneShot(RisaClip);
                 dealerText.text = $"¡Ups! Fallaste, eran {dealerNumber} dientes.";
             }
             
@@ -260,6 +261,7 @@ public class ParOImparGame : MonoBehaviour
         }
         else if (playerTeeth <= 0)
         {
+            audioSource.PlayOneShot(RisaClip);
             dealerText.text = "Te quedaste sin dientes... Que lastima";
             gameOver = true;
             StartCoroutine(EndGame(false));
@@ -337,11 +339,13 @@ public class ParOImparGame : MonoBehaviour
             playerTeeth -= betAmount;
             
             if(betAmount == 1)
-            {
+            {            
+                audioSource.PlayOneShot(RisaClip);
                 dealerText.text = "¡Adiviné! Dame ese diente.";
             }
             else
             {
+                audioSource.PlayOneShot(RisaClip);
                 dealerText.text = $"¡Adiviné! Dame esos dientes.";
             }
         }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class AnomaliasController : MonoBehaviour
@@ -9,7 +10,7 @@ public class AnomaliasController : MonoBehaviour
 
     #region Serialized Fields
     [Header("Configuración de Parpadeo")]
-    [SerializeField] private SpriteRenderer blinkSprite;
+    [SerializeField] private Image blinkPanel; // Cambiado de SpriteRenderer a Image
     [SerializeField, Range(0.05f, 1f)] private float minBlinkInterval = 0.1f;
     [SerializeField, Range(1f, 5f)] private float maxBlinkInterval = 3f;
     [SerializeField, Range(0.01f, 0.5f)] private float minBlinkDuration = 0.05f;
@@ -31,7 +32,7 @@ public class AnomaliasController : MonoBehaviour
 
     private void Start()
     {
-        InitializeBlinkSprite();
+        InitializeBlinkPanel();
     }
 
     private void OnDestroy()
@@ -55,18 +56,29 @@ public class AnomaliasController : MonoBehaviour
         }
     }
 
-    private void InitializeBlinkSprite()
+    private void InitializeBlinkPanel()
     {
-        if (blinkSprite != null)
+        if (blinkPanel != null)
         {
-            blinkSprite.enabled = false;
+            blinkPanel.enabled = false;
             
             // Configurar color semi-transparente
-            Color c = blinkSprite.color;
-            c.a = 0.7f; // 70% de opacidad
-            blinkSprite.color = c;
+            Color c = blinkPanel.color;
+            c.a = 0.7f;
+            blinkPanel.color = c;
             
-            // Mantiene la posición y escala que hayas asignado en el editor
+            // Deshabilitar Raycast Target para no bloquear interacciones
+            blinkPanel.raycastTarget = false; // ← Esta es la línea clave
+            
+            // Configurar para cubrir toda la pantalla
+            RectTransform rt = blinkPanel.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchorMin = Vector2.zero;
+                rt.anchorMax = Vector2.one;
+                rt.offsetMin = Vector2.zero;
+                rt.offsetMax = Vector2.zero;
+            }
         }
     }
     #endregion
@@ -116,9 +128,9 @@ public class AnomaliasController : MonoBehaviour
             StopCoroutine(blinkingCoroutine);
             blinkingCoroutine = null;
             
-            if (blinkSprite != null)
+            if (blinkPanel != null)
             {
-                blinkSprite.enabled = false;
+                blinkPanel.enabled = false;
             }
         }
     }
@@ -135,7 +147,7 @@ public class AnomaliasController : MonoBehaviour
             );
             yield return new WaitForSeconds(waitTime);
 
-            if (blinkSprite == null) yield break;
+            if (blinkPanel == null) yield break;
 
             if (Random.value < chanceForRapidBlinks)
             {
@@ -153,12 +165,12 @@ public class AnomaliasController : MonoBehaviour
         int rapidBlinks = Random.Range(2, 5);
         for (int i = 0; i < rapidBlinks; i++)
         {
-            yield return ToggleBlinkSprite(true);
+            yield return ToggleBlinkPanel(true);
             
             float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
             yield return new WaitForSeconds(blinkDuration);
             
-            yield return ToggleBlinkSprite(false);
+            yield return ToggleBlinkPanel(false);
             
             if (i < rapidBlinks - 1)
             {
@@ -169,19 +181,19 @@ public class AnomaliasController : MonoBehaviour
 
     private IEnumerator ExecuteSingleBlink()
     {
-        yield return ToggleBlinkSprite(true);
+        yield return ToggleBlinkPanel(true);
         
         float blinkDuration = Random.Range(minBlinkDuration, maxBlinkDuration);
         yield return new WaitForSeconds(blinkDuration);
         
-        yield return ToggleBlinkSprite(false);
+        yield return ToggleBlinkPanel(false);
     }
 
-    private IEnumerator ToggleBlinkSprite(bool state)
+    private IEnumerator ToggleBlinkPanel(bool state)
     {
-        if (blinkSprite != null)
+        if (blinkPanel != null)
         {
-            blinkSprite.enabled = state;
+            blinkPanel.enabled = state;
         }
         yield return null;
     }

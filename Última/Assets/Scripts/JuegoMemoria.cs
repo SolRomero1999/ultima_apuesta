@@ -25,6 +25,12 @@ public class JuegoMemoria : MonoBehaviour
     public TMP_Text dealerPairsText;
     #endregion
 
+    #region Configuración de Sonido
+    [Header("Configuración de Sonido")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sonidoVoltearCarta;
+    #endregion
+
     #region Diálogos
     private string[] introDialogue = {
         "En otro tiempo te hubiera dicho tu fortuna",
@@ -281,6 +287,14 @@ public class JuegoMemoria : MonoBehaviour
         }
     }
 
+    private void PlaySound(AudioClip clip)
+    {
+        if (audioSource != null && clip != null)
+        {
+            audioSource.PlayOneShot(clip);
+        }
+    }
+
     private void AgregarAMemoria(int cartaID)
     {
         if (cartas[cartaID].EstaEmparejada) return;
@@ -363,6 +377,7 @@ public class JuegoMemoria : MonoBehaviour
         if (cartaSeleccionada.EstaVolteada || cartaSeleccionada.EstaEmparejada) 
             return;
 
+        PlaySound(sonidoVoltearCarta);
         cartaSeleccionada.Voltear();
         cartasVolteadas[id] = true;
         AgregarAMemoria(id);
@@ -407,6 +422,7 @@ public class JuegoMemoria : MonoBehaviour
             yield return new WaitForSeconds(1f);
             cartasVolteadas[System.Array.IndexOf(cartas, primeraCartaSeleccionada)] = false;
             cartasVolteadas[System.Array.IndexOf(cartas, segundaCartaSeleccionada)] = false;
+            PlaySound(sonidoVoltearCarta);
             primeraCartaSeleccionada.Voltear();
             segundaCartaSeleccionada.Voltear();
             turnText.text = "No fue pareja...";
@@ -427,11 +443,13 @@ public class JuegoMemoria : MonoBehaviour
     {
         if (voltear)
         {
+            PlaySound(sonidoVoltearCarta);
             cartas[id].Voltear();
             cartasVolteadas[id] = true;
         }
         else
         {
+            PlaySound(sonidoVoltearCarta);
             cartas[id].Voltear();
             cartasVolteadas[id] = false;
         }
