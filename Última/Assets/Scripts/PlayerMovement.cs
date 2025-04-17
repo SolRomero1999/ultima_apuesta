@@ -68,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
     #region Movement Logic
     private void HandleInput()
     {
-        if (Input.GetMouseButtonDown(0) && !IsPointerOverWall())
+        if (!isMoving && Input.GetMouseButtonDown(0) && !IsPointerOverWall())
         {
             SetTargetPosition();
         }
