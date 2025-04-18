@@ -10,6 +10,7 @@ public class SimonDice : MonoBehaviour
     
     [Header("Referencias Visuales")]
     [SerializeField] private Image[] telefonos;
+    [SerializeField] private Animator[] telefonosAnimators; // Nuevo: Animators para cada teléfono
     [SerializeField] private Image dealer;
     [SerializeField] private Sprite dealerReglas;
     [SerializeField] private Sprite dealerJuego;
@@ -38,9 +39,6 @@ public class SimonDice : MonoBehaviour
 
     #region Variables Privadas
     
-    private const float ALPHA_APAGADO = 0.2f;
-    private const float ALPHA_ENCENDIDO = 1f;
-
     private int[] secuencia;
     private int nivel = 3;
     private int pasoActual = 0;
@@ -100,7 +98,6 @@ public class SimonDice : MonoBehaviour
         PlayerPrefs.SetInt("SimonDice_PlayedBefore", 1);
         
         InicializarUI();
-        ApagarTodosTelefonos();
         dealer.sprite = dealerReglas;
         blackScreen.SetActive(false);
     }
@@ -128,16 +125,6 @@ public class SimonDice : MonoBehaviour
         else
         {
             StartCoroutine(TypeDialogueText(dialogoRecordatorio[0]));
-        }
-    }
-
-    private void ApagarTodosTelefonos()
-    {
-        foreach (Image telefono in telefonos)
-        {
-            Color colorActual = telefono.color;
-            colorActual.a = ALPHA_APAGADO;
-            telefono.color = colorActual;
         }
     }
     
@@ -198,9 +185,12 @@ public class SimonDice : MonoBehaviour
             audioSource.Stop();
         }
 
-        Color colorOriginal = telefonos[index].color;
-        colorOriginal.a = ALPHA_ENCENDIDO;
-        telefonos[index].color = colorOriginal;
+        // Activar animación de ring
+        if (index < telefonosAnimators.Length && telefonosAnimators[index] != null)
+        {
+            string triggerName = "Ring" + (index + 1).ToString();
+            telefonosAnimators[index].SetTrigger(triggerName);
+        }
         
         if (sonidosTelefonos != null && index < sonidosTelefonos.Length && audioSource != null)
         {
@@ -208,9 +198,6 @@ public class SimonDice : MonoBehaviour
         }
         
         yield return new WaitForSeconds(tiempoIluminado);
-        
-        colorOriginal.a = ALPHA_APAGADO;
-        telefonos[index].color = colorOriginal;
     }
 
     public void TelefonoClicado(int telefonoIndex)
@@ -260,8 +247,6 @@ public class SimonDice : MonoBehaviour
 
     #region Finalización del Juego
     
-#region Finalización del Juego
-
     private void GanarJuego()
     {
         juegoActivo = false;
@@ -310,9 +295,7 @@ public class SimonDice : MonoBehaviour
         PlayerPrefs.SetString("LastScene", "Simon_Dice");
         SceneManager.LoadScene("MainScene");
     }
-
-#endregion
-
+    
     #endregion
 
     #region Manejo de UI
