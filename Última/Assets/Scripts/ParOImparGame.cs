@@ -370,7 +370,7 @@ public class ParOImparGame : MonoBehaviour
 
         if (playerTeeth >= 20)
         {
-            dealerText.text = "¡Ganaste!";
+            dealerText.text = "¡Ganaste! Puedes pasar con la tarotista";
             gameOver = true;
             StartCoroutine(EndGame(true));
         }

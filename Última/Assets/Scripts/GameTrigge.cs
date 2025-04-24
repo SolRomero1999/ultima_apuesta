@@ -194,7 +194,7 @@ public class GameTrigger : MonoBehaviour
         
         if (GameManager.Instance != null && GameManager.Instance.IsMinigameCompleted(scene))
         {
-            text.text = "¡Ya completaste este desafío! Ve al siguiente juego.";
+            text.text = "Ya completaste este desafío. Ve al siguiente juego.";
             SetupButton(clearBtn, CloseDialog);
             SetButtonActive(yesBtn, false);
             SetButtonActive(noBtn, false);

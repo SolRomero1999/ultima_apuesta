@@ -313,7 +313,7 @@ public class RuletaRusa : MonoBehaviour
                 }
                 else
                 {
-                    backgroundImage.sprite = imgJugadorSuicida;
+                    backgroundImage.sprite = imgDealerDispara;
                     PlaySound(disparoClip);
                     dealerText.text = "No es tu día...";
                     yield return new WaitForSeconds(1f);
@@ -373,9 +373,9 @@ public class RuletaRusa : MonoBehaviour
             {
                 if (esTurnoDelJugador)
                 {
-                    backgroundImage.sprite = imgJugadorSuicida;
                     PlaySound(disparoFallidoClip);
                     dealerText.text = "Vas con suerte...";
+                    backgroundImage.sprite = imgJugadorSuicida;
                     AvanzarBarril();
                     esTurnoDelJugador = true;
                     shootPanel.SetActive(true);
@@ -410,15 +410,15 @@ public class RuletaRusa : MonoBehaviour
 
     private IEnumerator EndGame()
     {
-        if (!isQuitting && GameManager.Instance != null)
-        {
-            GameManager.Instance.CompleteMinigame("Ruleta_Rusa");
-        }
         if (AnomaliasController.Instance != null)
         {
             AnomaliasController.Instance.RemoveAnomalia();
         }
-        
+        if (!isQuitting && GameManager.Instance != null)
+        {
+            GameManager.Instance.CompleteMinigame("Ruleta_Rusa");
+        }
+
         yield return new WaitForSeconds(2f);
         PlayerPrefs.SetString("LastScene", "Ruleta_Rusa");
         SceneManager.LoadScene("MainScene");

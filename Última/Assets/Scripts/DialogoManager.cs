@@ -96,15 +96,17 @@ public class DialogManager : MonoBehaviour
     {
         currentDialogLines = new DialogLine[]
         {
-            CreateDialogLine("¿Dónde estoy...? Todo esto se siente extraño...", playerDialogPrefab),
-            CreateDialogLine("Recuerdo haber muerto... pero no sé cómo sucedió...", playerDialogPrefab),
-            CreateDialogLine("¿Qué está pasando aquí?", playerDialogPrefab),
-            CreateDialogLine("Efectivamente, has muerto.", bartenderDialogPrefab),
-            CreateDialogLine("Y ahora estás aquí, en este lugar entre la vida y la muerte.", bartenderDialogPrefab),
-            CreateDialogLine("Para poder seguir adelante, tendrás que demostrar tu valía en una serie de juegos.", bartenderDialogPrefab),
-            CreateDialogLine("Cada juego es una prueba. Si las superas, quizás encuentres respuestas.", bartenderDialogPrefab),
-            CreateDialogLine("Si fallas... bueno, mejor ni hablemos de eso.", bartenderDialogPrefab),
-            CreateDialogLine("¿Listo para empezar?", bartenderDialogPrefab)
+            CreateDialogLine("¿Dónde estoy...? Todo esto se siente... irreal.", playerDialogPrefab),
+            CreateDialogLine("Recuerdo haber muerto... pero el final fue tan confuso, tan abrupto...", playerDialogPrefab),
+            CreateDialogLine("¿Qué es este lugar?", playerDialogPrefab),
+            CreateDialogLine("Has cruzado el umbral. Estás entre lo que fue... y lo que podría ser.", bartenderDialogPrefab),
+            CreateDialogLine("Aquí, en este limbo, los recuerdos se desvanecen y el juicio comienza.", bartenderDialogPrefab),
+            CreateDialogLine("Para avanzar, deberás enfrentar una serie de juegos. No son simples desafíos... son ecos de tu alma.", bartenderDialogPrefab),
+            CreateDialogLine("Cada uno pondrá a prueba tu voluntad e ingenio...", bartenderDialogPrefab),
+            CreateDialogLine("Si fallas, podrías perderte para siempre. Pero si persistes, si no olvidas quién eres al jugar una y otra vez...", bartenderDialogPrefab),
+            CreateDialogLine("...entonces tal vez, solo tal vez, merezcas una segunda oportunidad.", bartenderDialogPrefab),
+            CreateDialogLine("Así que dime, viajero de la muerte... ¿estás listo para empezar?", bartenderDialogPrefab),
+            CreateDialogLine("Tu primer prueba te espera en el rincón más colorido del olvido donde deberás probar tu suerte", bartenderDialogPrefab),
         };
     }
 
@@ -113,15 +115,15 @@ public class DialogManager : MonoBehaviour
         isPostRuleta = true;
         currentDialogLines = new DialogLine[]
         {
-            CreateDialogLine("¿Creías que había muerto?", bartenderDialogPrefab),
-            CreateDialogLine("En este lugar se podría decir que soy como un juez, una bala no me matará", bartenderDialogPrefab),
-            CreateDialogLine("Aún así me has ganado", bartenderDialogPrefab),
-            CreateDialogLine("¿Qué harás ahora?", bartenderDialogPrefab),
-            CreateDialogLine("¿Qué haré? ¿Qué opciones tengo?", playerDialogPrefab),
-            CreateDialogLine("Bueno, puedes reencarnar, olvidarás todo esto y podrás llevar una nueva vida", bartenderDialogPrefab),
-            CreateDialogLine("O puedes liberarme y tomar mi lugar", bartenderDialogPrefab),
-            CreateDialogLine("Ser el nuevo juez", bartenderDialogPrefab),
-            CreateDialogLine("¿Qué prefieres?", bartenderDialogPrefab)
+            CreateDialogLine("¿De verdad creías que podías matarme?", bartenderDialogPrefab),
+            CreateDialogLine("Aquí no soy un hombre... soy un juicio encarnado. Una bala no basta para detener lo que represento.", bartenderDialogPrefab),
+            CreateDialogLine("Y sin embargo, lo lograste. Me venciste.", bartenderDialogPrefab),
+            CreateDialogLine("Ahora la decisión no es mía... es tuya.", bartenderDialogPrefab),
+            CreateDialogLine("¿Mía? ¿Qué decisión podría tomar aquí?", playerDialogPrefab),
+            CreateDialogLine("Puedes renacer. Volver a la rueda, olvidar este lugar... y comenzar de nuevo, con otra piel, otro nombre.", bartenderDialogPrefab),
+            CreateDialogLine("O puedes quedarte. Romper el ciclo. Convertirte en lo que yo fui.", bartenderDialogPrefab),
+            CreateDialogLine("Ser el nuevo juez... custodio de las almas perdidas, guardián del tránsito final.", bartenderDialogPrefab),
+            CreateDialogLine("No hay respuestas correctas aquí. Solo caminos. ¿Cuál seguirás tú?", bartenderDialogPrefab)
         };
     }
 
@@ -133,22 +135,22 @@ public class DialogManager : MonoBehaviour
 
         List<DialogLine> lines = new List<DialogLine>
         {
-            CreateDialogLine("¿Dónde estoy?", secondPlayerDialogPrefab),
+            CreateDialogLine("¿Q-qué es este lugar...?", secondPlayerDialogPrefab),
             CreateDialogLine(judgeLevel == 0 ? 
-                "Se podría decir que en el limbo, haz muerto" : 
-                "Oh, al fin llegó alguien... estás en el limbo", bartenderPrefab),
-            CreateDialogLine("¿El limbo? ¿Cómo llegué aquí?", secondPlayerDialogPrefab),
+                "Podríamos llamarlo limbo. Has cruzado el umbral... has muerto." : 
+                "Oh... llegó alguien. Bienvenido al limbo.", bartenderPrefab),
+            CreateDialogLine("¿El limbo...? No entiendo... ¿cómo llegué aquí?", secondPlayerDialogPrefab),
             CreateDialogLine(judgeLevel == 0 ? 
-                "Eso es obvio, haz muerto" : 
-                "Bueno, lamentablemente haz muerto", bartenderPrefab),
-            CreateDialogLine("¿Muerto? No lo recuerdo...", secondPlayerDialogPrefab),
+                "No es difícil de imaginar. Tu historia llegó a su fin." : 
+                "Lamentablemente, has muerto. Así llegan todos aquí.", bartenderPrefab),
+            CreateDialogLine("¿Muerto...? No... esto no puede estar pasando...", secondPlayerDialogPrefab),
             CreateDialogLine(judgeLevel == 0 ? 
-                "Quizás lo hagas una vez que demuestres tu valor... supera los juegos aquí establecidos" : 
-                "Es normal, yo tampoco lo hice. Lo recordarás a medida que vayas jugando. Si terminas los juegos recordarás y podrás irte", bartenderPrefab),
-            CreateDialogLine("¿Debo jugar?", secondPlayerDialogPrefab),
+                "Este lugar no da segundas oportunidades sin pruebas. Si quieres salir de aquí, tendrás que superar los juegos." : 
+                "Sí... pero no todo está perdido. Si completas las pruebas, puede que encuentres tu camino.", bartenderPrefab),
+            CreateDialogLine("¿Debo jugar...? ¿Qué clase de juegos son?", secondPlayerDialogPrefab),
             CreateDialogLine(judgeLevel == 0 ? 
-                "Sí, mejor comienza ya" : 
-                "Sí, buena suerte", bartenderPrefab)
+                "Juegos que revelan quién eres. Te aconsejo que empieces cuanto antes." : 
+                "Son pruebas... no fáciles, pero necesarias. Buena suerte.", bartenderPrefab)
         };
 
         currentDialogLines = lines.ToArray();
@@ -317,11 +319,13 @@ public class DialogManager : MonoBehaviour
 
     private void OnReencarnarClicked()
     {
+        CleanupCurrentDialog();
         SceneManager.LoadScene("EndGame");
     }
 
     private void OnJuezClicked()
     {
+        CleanupCurrentDialog();
         if (GameManager.Instance != null)
         {
             int playerState = GameManager.Instance.GetPlayerState();

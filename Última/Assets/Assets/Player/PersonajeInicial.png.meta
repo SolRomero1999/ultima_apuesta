@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0f4e925f1d0c7134a95138719d64f74d
+guid: d64b1d4b47385664ca7e06859bcb0de6
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PersonajeAbajo_0
+      name: PersonajeInicial_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 227.5
-        height: 714
+        x: 50
+        y: 776
+        width: 334
+        height: 708
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,19 +124,82 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f61ba79f657a4c44397d2902180ae205
-      internalID: -1774990597
+      spriteID: fd5a8f84a057dc04db3d406201c4fbe5
+      internalID: 4201160
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: PersonajeAbajo_1
+      name: PersonajeInicial_1
       rect:
         serializedVersion: 2
-        x: 227
-        y: 0
-        width: 227.5
+        x: 432
+        y: 773
+        width: 228
+        height: 711
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74d4335133bfda74a9f4cb67e05ade35
+      internalID: 594785892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeInicial_2
+      rect:
+        serializedVersion: 2
+        x: 665
+        y: 776
+        width: 202
+        height: 708
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c6eca378e2f9a74ab86ed7c08b32c2a
+      internalID: -835640182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeInicial_3
+      rect:
+        serializedVersion: 2
+        x: 997
+        y: 776
+        width: 261
+        height: 702
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7eb9f54914c3c434ea8e92c78227e23e
+      internalID: -581369404
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: PersonajeInicial_4
+      rect:
+        serializedVersion: 2
+        x: 1275
+        y: 767
+        width: 261
         height: 714
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -145,8 +208,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8fc40ea44a22cf5429998307bd08ff31
-      internalID: 1370556381
+      spriteID: 836fa1eca87d59e4aaa764e2d6d6ac83
+      internalID: 711335917
       vertices: []
       indices: 
       edges: []
@@ -162,8 +225,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      PersonajeAbajo_0: -1774990597
-      PersonajeAbajo_1: 1370556381
+      PersonajeInicial_0: 4201160
+      PersonajeInicial_1: 594785892
+      PersonajeInicial_2: -835640182
+      PersonajeInicial_3: -581369404
+      PersonajeInicial_4: 711335917
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

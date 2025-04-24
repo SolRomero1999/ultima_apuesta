@@ -72,9 +72,8 @@ public class SimonDice : MonoBehaviour
     };
 
     private readonly string[] mensajesVictoria = {
-        "¡Bien hecho! Has completado el juego",
-        "¡Impresionante! Has ganado",
-        "La suerte estuvo de tu lado esta vez"
+        "Bien hecho, ya estas listo para el final",
+        "Impresionante, ve a ver al Bartender",
     };
 
     private readonly string[] mensajesDerrota = {

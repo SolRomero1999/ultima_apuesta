@@ -546,7 +546,7 @@ MonoBehaviour:
   minBlinkDuration: 0.05
   maxBlinkDuration: 0.3
   chanceForRapidBlinks: 0.3
-  maxAnomalias: 4
+  maxAnomalias: 1
 --- !u!4 &102426952
 Transform:
   m_ObjectHideFlags: 0
@@ -1578,7 +1578,7 @@ MonoBehaviour:
   - Vuelve en otro momento
   dialogBackgrounds:
   - {fileID: 21300000, guid: 87a404e4dd1e40449944c6f6e13836a8, type: 3}
-  - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  - {fileID: 21300000, guid: c3679fd759af609459ff6bde69598253, type: 3}
   showOnlyMessageStates: 0001
   isSpecialMessage: 0
   specialAnimator: {fileID: 0}
@@ -2288,7 +2288,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c3679fd759af609459ff6bde69598253, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3096,7 +3096,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000091552734, y: 0.7648926}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0.7648926}
   m_SizeDelta: {x: 18.359, y: 16.8289}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &679349043
@@ -3137,7 +3137,7 @@ MonoBehaviour:
   - "\xBFDeseas ver tu futuro?"
   dialogBackgrounds:
   - {fileID: 21300000, guid: fe45840f2e149df43b9c262511a09bf6, type: 3}
-  - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  - {fileID: 21300000, guid: c3679fd759af609459ff6bde69598253, type: 3}
   showOnlyMessageStates: 0001
   isSpecialMessage: 0
   specialAnimator: {fileID: 0}
@@ -4069,7 +4069,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 97
-  m_Sprite: {fileID: 21300000, guid: 3ef26d59eab70e1488fd48eca7064345, type: 3}
+  m_Sprite: {fileID: 4201160, guid: d64b1d4b47385664ca7e06859bcb0de6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4152,7 +4152,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.9, y: 7.1}
+    oldSize: {x: 3.3410826, y: 7.0800004}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -5711,7 +5711,7 @@ MonoBehaviour:
   - Vuelve en otro momento
   dialogBackgrounds:
   - {fileID: 21300000, guid: 808127f4d20d25e40a45b058ea39317e, type: 3}
-  - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  - {fileID: 21300000, guid: c3679fd759af609459ff6bde69598253, type: 3}
   showOnlyMessageStates: 0001
   isSpecialMessage: 0
   specialAnimator: {fileID: 0}
@@ -6191,7 +6191,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6911,7 +6911,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1800747049, guid: 60296915937ceb5459630275a199b180, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7290,7 +7290,7 @@ MonoBehaviour:
   - Vuelve en otro momento
   dialogBackgrounds:
   - {fileID: 21300000, guid: 5e030d34c4a719944bb5b831b359dff7, type: 3}
-  - {fileID: 1221224649, guid: 60296915937ceb5459630275a199b180, type: 3}
+  - {fileID: 21300000, guid: c3679fd759af609459ff6bde69598253, type: 3}
   showOnlyMessageStates: 0001
   isSpecialMessage: 0
   specialAnimator: {fileID: 0}

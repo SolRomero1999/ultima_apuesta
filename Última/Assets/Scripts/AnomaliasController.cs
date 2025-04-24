@@ -16,7 +16,7 @@ public class AnomaliasController : MonoBehaviour
     [SerializeField, Range(0.01f, 0.5f)] private float minBlinkDuration = 0.05f;
     [SerializeField, Range(0.1f, 1f)] private float maxBlinkDuration = 0.3f;
     [SerializeField, Range(0f, 1f)] private float chanceForRapidBlinks = 0.3f;
-    [SerializeField, Range(1, 10)] private int maxAnomalias = 4;
+    [SerializeField, Range(1, 10)] private int maxAnomalias = 1;
     #endregion
 
     #region Private Variables

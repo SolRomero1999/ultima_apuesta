@@ -286,7 +286,7 @@ public class TragaMonedas : MonoBehaviour
         if (win)
         {
             PlayWinSound();
-            winText.text = "Bien, puedes ir al siguiente juego";
+            winText.text = "Bien, puedes ir al siguiente juego con la vieja";
             winPanel.SetActive(true); 
             
             yield return new WaitForSeconds(winDelay);
